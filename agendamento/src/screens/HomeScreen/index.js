@@ -1,45 +1,41 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 
 export default function HomeScreen() {
   const [selected, setSelected] = useState(''); //state pra armazenar a data do calendário selecionada
 
   return (
-    
-    <View style={styles.container}>
-
+    <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <View style={styles.textContainer}>
-         <Text style={styles.help}>Precisa de ajuda?</Text>
-         <Text style={styles.ted}>Clique aqui e fale com o Ted</Text>
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.textHelp}>Precisa de ajuda?</Text>
+          <Text style={styles.textTed}>Clique aqui e fale com o Ted</Text>
         </View>
         <Image
           source={require('../../../assets/images/chatbot.png')}
-          style={styles.logo}
+          style={styles.imageTed}
         />
       </View>
-  
-      
-      <View style={styles.calendario}> 
-        <Calendar //Calendário básico com seleção da data
-        hideExtraDays={false}
-        staticHeader={true}
-           onDayPress={day => {
-        setSelected(day.dateString);
-      }}
-      markedDates={{
-        [selected]: {selected: true, disableTouchEvent: true, selectedColor: '#fecc00ff', selectedTextColor: 'black' }
-      }}
-        
+      <View style={styles.calendarContainer}>
+        <Calendar
+          style={styles.calendar}
+          hideExtraDays={false}
+          staticHeader={true}
+          onDayPress={day => {
+            setSelected(day.dateString);
+          }}
+          markedDates={{
+            [selected]: { selected: true, disableTouchEvent: true, selectedColor: '#fecc00ff', selectedTextColor: 'black' }
+          }}
         />
+        <View style={styles.textContainerCustom}>
+          <Text style={styles.titleAtendimentos}>Meus atendimentos</Text>
+          <Text style={styles.textAtendimentos}>Você não possui atendimento para esta data.</Text>
+        </View>
       </View>
-
-      <View style={styles.atendimentosContainer}>
-        <Text style={styles.textAtendimentos}>Meus atendimentos</Text>
-        <Text style={styles.titleAtendimentos}>Você não possui atendimento para esta data.</Text>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -47,72 +43,75 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 40,
+    justifyContent: 'flex-start',
+    alignItems: 'stretch',
+    paddingTop: 40,
+    paddingHorizontal: 0,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    paddingHorizontal: 20,
-    marginBottom: 20,
+    paddingHorizontal: 24,
+    marginBottom: 16,
   },
   headerTextContainer: {
     flex: 1,
     justifyContent: 'center',
+    paddingRight: 12,
   },
-  help: {
-    textAlign: 'center',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  ted: {
+  textHelp: {
     textAlign: 'left',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#222',
+    marginBottom: 2,
   },
-  logo: {
-    width: 100,
-    height: 100,
-    marginLeft: 16,
+  textTed: {
+    fontSize: 16,
+    textAlign: 'left',
+    color: '#555',
+  },
+  calendarContainer: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 0,
+    marginBottom: 0,
+  },
+  imageTed: {
+    width: Dimensions.get('window').width * 0.18,
+    height: Dimensions.get('window').width * 0.18,
+    marginLeft: 8,
     resizeMode: 'contain',
   },
-  calendario: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'stretch',
+  calendar: {
     width: '100%',
+    alignSelf: 'stretch',
+    minWidth: '100%',
+    maxWidth: '100%',
+    marginBottom: 24,
   },
-  help: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  textContainerCustom: {
+    marginTop: 8,
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 16,
   },
-  ted: {
-    fontSize: 20,
-    textAlign: 'center',
-  },
-    atendimentosContainer: {
-      width: '100%',
-      alignItems: 'center',
-      justifyContent: 'flex-end',
-      position: 'absolute',
-      bottom: 40,
-      left: 0,
-      right: 0,
-      paddingHorizontal: 20,
-    },
   textAtendimentos: {
-      fontSize: 20,
-      fontWeight: 'bold',
-      marginBottom: 10,
-      textAlign: 'center',
-      color: '#888',
-  },
-  titleAtendimentos: {
-    fontSize: 16,
+    fontSize: 15,
     textAlign: 'center',
     color: '#888',
+    marginBottom: 2,
+  },
+  titleAtendimentos: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    marginBottom: 6,
+    textAlign: 'center',
+    color: '#222',
   },
 
 });

@@ -37,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
         />
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.replace('HomeScreen')} // Navega para a tela Home e remove a Login da pilha, somente para implementar rotas, deve ser ajustado para autenticação
+          onPress={() => navigation.replace('Tabs')} // Ajustado: agora 'Tabs' é a rota correta do Stack
         >
           <Text style={styles.buttonText}>Acessar</Text>
         </TouchableOpacity>
