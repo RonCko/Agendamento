@@ -11,6 +11,7 @@ const Tab = createBottomTabNavigator();
 export default function Tabs() {
   return (
     <Tab.Navigator
+    // Define a tela inicial ao abrir a aplicação
       initialRouteName="HomeScreen"
       screenOptions={({ route }) => ({
         headerShown: false,
@@ -25,10 +26,11 @@ export default function Tabs() {
           paddingTop: 6,
         },
         tabBarIcon: ({ color, size, focused }) => {
+          // define o icone padrão
           let iconName = 'ellipse';
           switch (route.name) { // Define os icones para quando o botão estiver ativo ou inativo
             case 'HomeScreen':
-              iconName = focused ? 'home' : 'home-outline';
+              iconName = focused ? 'home' : 'home-outline'; //ex se ativo mostra home se inativo home-outline
               break;
             case 'SearchScreen':
               iconName = focused ? 'search' : 'search-outline';
@@ -44,10 +46,14 @@ export default function Tabs() {
         }
       })}
     >
-      <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Início' }} />
+
+      {/*define as telas para navegação com Tab.Navigator, definindo a tabscreen com um nome e após isso o seu respectivo componente*/}
+
+      <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Início' }} /> 
       <Tab.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Buscar' }} />
       <Tab.Screen name="AgendamentoScreen" component={AgendamentoScreen} options={{ title: 'Agendar' }} />
       <Tab.Screen name="PerfilScreen" component={PerfilScreen} options={{ title: 'Perfil' }} />
+      {/* title é o nome que aparece abaixo do icone */}
     </Tab.Navigator>
   );
 }

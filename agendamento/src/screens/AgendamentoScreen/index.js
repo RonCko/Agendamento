@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+
+//tela em construção
 const AgendamentoScreen = () => {
     return (
         <View style={styles.container}>
