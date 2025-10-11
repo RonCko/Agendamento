@@ -7,33 +7,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
     justifyContent: 'flex-start',
     alignItems: 'stretch',
-    paddingTop: 40,
     paddingHorizontal: 0,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 24,
-    marginBottom: 16,
-  },
-  headerTextContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    paddingRight: 12,
-  },
-  textHelp: {
-    textAlign: 'left',
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#222',
-    marginBottom: 2,
-  },
-  textTed: {
-    fontSize: 16,
-    textAlign: 'left',
-    color: '#555',
   },
   calendarContainer: {
     flex: 1,
@@ -42,12 +16,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 0,
     marginBottom: 0,
-  },
-  imageTed: {
-    width: Dimensions.get('window').width * 0.18,
-    height: Dimensions.get('window').width * 0.18,
-    marginLeft: 8,
-    resizeMode: 'contain',
   },
   calendar: {
     width: '100%',
@@ -62,19 +30,20 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 16,
   },
-  textAtendimentos: {
-    fontSize: 15,
-    textAlign: 'center',
-    color: '#888',
-    marginBottom: 2,
-  },
   titleAtendimentos: {
     fontSize: 17,
     fontWeight: 'bold',
     marginBottom: 6,
     textAlign: 'center',
-    color: '#222',
+    color: colors.text,
   },
+  textAtendimentos: {
+    fontSize: 15,
+    textAlign: 'center',
+    color: colors.placeholder,
+    marginBottom: 2,
+  },
+  
 
 });
 
