@@ -1,52 +1,44 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, Dimensions, useWindowDimensions } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import HeaderTed from '../../components/HeaderTed';
+import styles from './styles';
 
 const PerfilScreen = () => {
+    const insets = useSafeAreaInsets();
+    const { width } = useWindowDimensions();
+    const avatarSize = Math.min(width * 0.7, 300);
     return (
-        <View style={styles.container}>
-            <View style={styles.botImageContainer}>
-                <Image
-                    source={require('../../../assets/images/chatbot.png')}
-                    style={styles.botImage}
-                />
-            </View>
-
+        <SafeAreaView style={styles.container} edges={['top','left','right']}>
+            <HeaderTed />
             <View style={styles.perfilContainer}>
                 <Image
                     source={require('../../../assets/images/perfil-blank.png')}
-                    style={styles.perfilImage}
+                    style={[
+                        styles.perfilImage,
+                        { width: avatarSize, height: avatarSize, borderRadius: avatarSize / 2 }
+                    ]}
                 />
             </View>
-        </View>
+
+            <View style={styles.textContainer}>
+                <View style={styles.infoCard}>
+                    <Text style={styles.descText}>Nome</Text>
+                    <Text style={styles.text}>Fulano da Silva</Text>
+
+                    <Text style={styles.descText}>R.A</Text>
+                    <Text style={styles.text}>a2508915</Text>
+
+                    <Text style={styles.descText}>E-mail</Text>
+                    <Text style={styles.text}>fulano@exemplo.com</Text>
+
+                    <Text style={styles.descText}>Curso</Text>
+                    <Text style={styles.text}>Engenharia de Software</Text>
+                </View>
+            </View>
+    </SafeAreaView>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    botImageContainer: {
-        position: 'absolute',
-        top: 40,
-    },
-    botImage: {
-        width: 100,
-        height: 100,
-    },
-    perfilContainer: {
-        marginTop: 60,
-        alignItems: 'center',
-    },
-    perfilImage: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-    },
-    text: {
-        fontSize: 20,
-    },
-});
 
 export default PerfilScreen;

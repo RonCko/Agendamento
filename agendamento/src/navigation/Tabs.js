@@ -1,6 +1,7 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
@@ -9,6 +10,7 @@ import PerfilScreen from '../screens/PerfilScreen';
 const Tab = createBottomTabNavigator();
 
 export default function Tabs() {
+  const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
     // Define a tela inicial ao abrir a aplicação
@@ -18,11 +20,12 @@ export default function Tabs() {
         tabBarActiveTintColor: '#000',
         tabBarInactiveTintColor: '#777',
         tabBarShowLabel: true,
+        tabBarHideOnKeyboard: true,
         tabBarStyle: {
           backgroundColor: '#fff',
           borderTopWidth: 0,
-          height: 60,
-          paddingBottom: 6,
+          height: 56 + insets.bottom,
+          paddingBottom: Math.max(6, insets.bottom),
           paddingTop: 6,
         },
         tabBarIcon: ({ color, size, focused }) => {
@@ -51,7 +54,7 @@ export default function Tabs() {
 
       <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Início' }} /> 
       <Tab.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Buscar' }} />
-      <Tab.Screen name="AgendamentoScreen" component={AgendamentoScreen} options={{ title: 'Agendar' }} />
+      <Tab.Screen name="AgendamentoScreen" component={AgendamentoScreen} options={{ title: 'Agendamentos' }} />
       <Tab.Screen name="PerfilScreen" component={PerfilScreen} options={{ title: 'Perfil' }} />
       {/* title é o nome que aparece abaixo do icone */}
     </Tab.Navigator>

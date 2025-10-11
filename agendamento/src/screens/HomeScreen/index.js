@@ -1,24 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import styles from './styles';
+import HeaderTed from '../../components/HeaderTed';
 
 export default function HomeScreen() {
   const [selected, setSelected] = useState(''); //state pra armazenar a data do calendário selecionada
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.textHelp}>Precisa de ajuda?</Text>
-          <Text style={styles.textTed}>Clique aqui e fale com o Ted</Text>
-        </View>
-        <Image
-          source={require('../../../assets/images/chatbot.png')}
-          style={styles.imageTed}
-        />
-      </View>
+    <SafeAreaView style={styles.container} edges={['top','left','right']}>
+      <HeaderTed />
       <View style={styles.calendarContainer}>
         <Calendar
           style={styles.calendar}

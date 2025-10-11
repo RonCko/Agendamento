@@ -24,13 +24,13 @@ const styles = StyleSheet.create({
   input: {
     width: '80%',
     height: 50,
-    borderColor: '#ccc',
+    borderColor: colors.border,
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 15,
     marginBottom: 20,
     fontSize: 16,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: colors.inputBackground,
   },
   button: {
     width: '80%',
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   buttonText: {
-    color: '#000',
+    color: colors.text,
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   forgotButtonText: {
-    color: '#333',
+    color: colors.text,
     fontSize: 16,
   },
 });
