@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import {
     View,
     Text,
-    StyleSheet,
     FlatList,
     TouchableOpacity,
     Alert,
@@ -12,6 +11,8 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import HeaderTed from '../../components/HeaderTed';
+import styles from './styles';
 
 const SLOT_ROW_HEIGHT = 64; // altura aproximada de uma linha de slots
 const VISIBLE_ROWS = 3;
@@ -101,9 +102,11 @@ const AgendamentoScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Agendar</Text>
-            <Text style={styles.subtitleHeader}>{sector?.name || 'Setor'}</Text>
-            <Text style={styles.subtitle}>Bloco {sector?.bloco} • Sala {sector?.sala}</Text>
+            <HeaderTed />
+            <View style={styles.pagePad}>
+                <Text style={styles.title}>Agendar</Text>
+                <Text style={styles.subtitleHeader}>{sector?.name || 'Setor'}</Text>
+                <Text style={styles.subtitle}>Bloco {sector?.bloco} • Sala {sector?.sala}</Text>
 
                     <View style={{ marginTop: 8 }} />
 
@@ -159,56 +162,11 @@ const AgendamentoScreen = () => {
             <TouchableOpacity style={styles.confirmButton} onPress={confirm}>
                 <Text style={styles.confirmText}>Confirmar agendamento</Text>
             </TouchableOpacity>
+        </View>
         </SafeAreaView>
     );
 };
 
-const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-    title: { fontSize: 18, fontWeight: '700' },
-    subtitleHeader: { fontSize: 20, fontWeight: '800', marginTop: 6 },
-    subtitle: { color: '#666', marginBottom: 12 },
-    input: {
-        height: 44,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 8,
-        paddingHorizontal: 12,
-        marginBottom: 12,
-    },
-    sectionTitle: { fontSize: 16, fontWeight: '600', marginVertical: 8 },
-    slotsContainer: {
-        // altura fixa para mostrar 3 linhas e permitir scroll
-        marginBottom: 12,
-        borderRadius: 8,
-        backgroundColor: '#fff'
-    },
-    slot: {
-        flex: 1,
-        margin: 6,
-        height: 48,
-        borderRadius: 24,
-        borderWidth: 0,
-        backgroundColor: '#f6f9ff',
-        alignItems: 'center',
-        justifyContent: 'center',
-        shadowColor: '#000',
-        shadowOpacity: 0.04,
-        shadowRadius: 6,
-        elevation: 1,
-    },
-    slotSelected: { backgroundColor: '#1a73e8', borderColor: '#1a73e8' },
-    slotText: { color: '#1a73e8', fontWeight: '700' },
-    slotTextSelected: { color: '#fff', fontWeight: '700' },
-    confirmButton: {
-        backgroundColor: '#1a73e8',
-        padding: 14,
-        borderRadius: 8,
-        alignItems: 'center',
-        marginTop: 12,
-    },
-    confirmText: { color: '#fff', fontWeight: '700' },
-    empty: { padding: 24, alignItems: 'center' },
-});
+
 
 export default AgendamentoScreen;

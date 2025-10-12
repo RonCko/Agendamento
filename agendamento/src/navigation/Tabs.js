@@ -66,7 +66,7 @@ export default function Tabs() {
       <Tab.Screen
         name="AgendamentoScreen"
         component={AgendamentoScreen}
-        options={{ title: 'Agendamentos', tabBarLabel: ({ color }) => <Text style={{ color }}>Agendamentos</Text> }}
+        options={{ title: 'Agendamento', tabBarLabel: ({ color }) => <Text style={{ color }}>Agendamento</Text> }}
       />
       <Tab.Screen
         name="PerfilScreen"

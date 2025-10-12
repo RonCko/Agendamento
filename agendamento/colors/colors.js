@@ -10,7 +10,7 @@ const colors = {
   border: '#ccc',
   inputBackground: '#f9f9f9',
   placeholder: '#999',
-
+  card: '#f6f9ff',
 };
 
 /*ajustar cores exemplos 

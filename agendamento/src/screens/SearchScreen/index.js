@@ -2,14 +2,14 @@ import React, { useState, useMemo } from 'react';
 import {
     View,
     Text,
-    StyleSheet,
     TextInput,
     TouchableOpacity,
     FlatList,
-    Platform,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import HeaderTed from '../../components/HeaderTed';
+import styles from './styles';
 
 const SECTORES = [
     { id: 'deped', name: 'DEPED', bloco: 'A', sala: '101' },
@@ -36,12 +36,13 @@ const SearchScreen = () => {
 
         return (
             <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
-                <View style={styles.header}>
+                <HeaderTed />
+                <View style={[styles.header, styles.pagePad]}>
                     <Text style={styles.title}>Buscar setores</Text>
                     <Text style={styles.headerSubtitle}>Encontre e agende atendimento nos setores</Text>
                 </View>
 
-                <View style={styles.shortcutsRow}>
+                <View style={[styles.shortcutsRow, styles.pagePad]}>
                     {popularShortcuts.map((label) => {
                         const sector = SECTORES.find((s) => s.name === label);
                         return (
@@ -56,7 +57,7 @@ const SearchScreen = () => {
                     })}
                 </View>
 
-                <View style={styles.searchBar}>
+                <View style={[styles.searchBar, styles.pagePad]}>
                     <Text style={styles.searchIcon}>🔍</Text>
                     <TextInput
                         style={styles.input}
@@ -71,7 +72,7 @@ const SearchScreen = () => {
                     data={filtered}
                     keyExtractor={(item) => item.id}
                     keyboardShouldPersistTaps="handled"
-                    contentContainerStyle={{ paddingBottom: 32 }}
+                    contentContainerStyle={{ paddingBottom: 32, paddingHorizontal: 16 }}
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             style={styles.card}
@@ -97,64 +98,5 @@ const SearchScreen = () => {
         );
 };
 
-const styles = StyleSheet.create({
-        container: { flex: 1, padding: 16, backgroundColor: '#fff' },
-        header: { marginBottom: 8 },
-        title: { fontSize: 22, fontWeight: '700' },
-        headerSubtitle: { color: '#666', marginTop: 4 },
-        shortcutsRow: { flexDirection: 'row', marginVertical: 12 },
-        shortcut: {
-            backgroundColor: '#eef6ff',
-            paddingVertical: 10,
-            paddingHorizontal: 16,
-            borderRadius: 24,
-            marginRight: 10,
-            shadowColor: '#000',
-            shadowOpacity: 0.06,
-            shadowRadius: 4,
-            elevation: 1,
-        },
-        shortcutText: { color: '#1a73e8', fontWeight: '700' },
-        searchBar: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: '#f6f9ff',
-            borderRadius: 10,
-            paddingHorizontal: 10,
-            paddingVertical: Platform.OS === 'ios' ? 10 : 6,
-            marginBottom: 12,
-        },
-        searchIcon: { marginRight: 8, fontSize: 18 },
-        input: { flex: 1, fontSize: 16, color: '#111' },
-        card: {
-            flexDirection: 'row',
-            alignItems: 'center',
-            backgroundColor: '#fff',
-            padding: 12,
-            borderRadius: 10,
-            marginBottom: 10,
-            shadowColor: '#000',
-            shadowOpacity: 0.06,
-            shadowRadius: 6,
-            elevation: 2,
-        },
-        cardLeft: { marginRight: 12 },
-        avatar: {
-            width: 44,
-            height: 44,
-            borderRadius: 22,
-            backgroundColor: '#e6f0ff',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: '700',
-        },
-        avatarText: { fontWeight: '700', color: '#1a73e8' },
-        cardBody: { flex: 1 },
-        itemTitle: { fontSize: 16, fontWeight: '700' },
-        itemSubtitle: { color: '#666', marginTop: 4 },
-        cardRight: { alignItems: 'flex-end' },
-        chevron: { fontSize: 22, color: '#ccc' },
-        empty: { padding: 24, alignItems: 'center' },
-});
 
 export default SearchScreen;
