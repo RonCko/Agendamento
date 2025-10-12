@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     },
         // Ted agora é renderizado via HeaderTed reutilizável
     perfilContainer: {
-        flex: 3,
+        flex: 5,
         alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 24,
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
         maxWidth: 300,
     },
     textContainer: {
-        flex: 5,
+        flex: 4,
         alignItems: 'center',
     },
     infoCard: {

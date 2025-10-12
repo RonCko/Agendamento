@@ -1,8 +1,10 @@
 import React from 'react';
-import { View, TextInput, TouchableOpacity, Text, StyleSheet, Image } from 'react-native';
+import { View, TextInput, TouchableOpacity, Text, Image } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import styles from './styles';
 
 const LoginScreen = ({ navigation }) => {
+  const insets = useSafeAreaInsets();
   const [ra, setRa] = React.useState('');
   const handleRaChange = (text) => {
     // lógica para formatar o R.A com 'a' no início e aceitar apenas números
@@ -15,7 +17,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top','left','right','bottom']}>
       <View style={styles.content}>
         <Image
           source={require('../../../assets/images/logo_utfpr.png')}
@@ -43,10 +45,10 @@ const LoginScreen = ({ navigation }) => {
           <Text style={styles.buttonText}>Acessar</Text>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.forgotButton}>
+      <TouchableOpacity style={[styles.forgotButton, { paddingBottom: Math.max(insets.bottom, 8) }]}>
         <Text style={styles.forgotButtonText}>Esqueceu a senha?</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
