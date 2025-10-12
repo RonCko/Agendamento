@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Text } from 'react-native';
 import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
@@ -52,10 +53,26 @@ export default function Tabs() {
 
       {/*define as telas para navegação com Tab.Navigator, definindo a tabscreen com um nome e após isso o seu respectivo componente*/}
 
-      <Tab.Screen name="HomeScreen" component={HomeScreen} options={{ title: 'Início' }} /> 
-      <Tab.Screen name="SearchScreen" component={SearchScreen} options={{ title: 'Buscar' }} />
-      <Tab.Screen name="AgendamentoScreen" component={AgendamentoScreen} options={{ title: 'Agendamentos' }} />
-      <Tab.Screen name="PerfilScreen" component={PerfilScreen} options={{ title: 'Perfil' }} />
+      <Tab.Screen
+        name="HomeScreen"
+        component={HomeScreen}
+        options={{ title: 'Início', tabBarLabel: ({ color }) => <Text style={{ color }}>Início</Text> }}
+      />
+      <Tab.Screen
+        name="SearchScreen"
+        component={SearchScreen}
+        options={{ title: 'Buscar', tabBarLabel: ({ color }) => <Text style={{ color }}>Buscar</Text> }}
+      />
+      <Tab.Screen
+        name="AgendamentoScreen"
+        component={AgendamentoScreen}
+        options={{ title: 'Agendamentos', tabBarLabel: ({ color }) => <Text style={{ color }}>Agendamentos</Text> }}
+      />
+      <Tab.Screen
+        name="PerfilScreen"
+        component={PerfilScreen}
+        options={{ title: 'Perfil', tabBarLabel: ({ color }) => <Text style={{ color }}>Perfil</Text> }}
+      />
       {/* title é o nome que aparece abaixo do icone */}
     </Tab.Navigator>
   );

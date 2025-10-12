@@ -43,6 +43,25 @@ const styles = StyleSheet.create({
     color: colors.placeholder,
     marginBottom: 2,
   },
+  agendamentoItem: {
+    width: '100%',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    marginBottom: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowRadius: 6,
+    elevation: 1,
+  },
+  agendamentoTitle: { fontWeight: '700', color: '#111' },
+  agendamentoSub: { color: '#666', marginTop: 2 },
+  cancelButton: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6, backgroundColor: '#ffecec' },
+  cancelText: { color: '#c0392b', fontWeight: '700' },
   
 
 });
