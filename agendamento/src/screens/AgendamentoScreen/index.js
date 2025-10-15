@@ -54,6 +54,15 @@ const AgendamentoScreen = () => {
             return `${y}-${m}-${day}`;
         }
 
+        // formata uma Date para exibição DD/MM/AAAA (apresentação somente)
+        function formatDateForDisplay(d) {
+            if (!d) return '';
+            const day = String(d.getDate()).padStart(2, '0');
+            const month = String(d.getMonth() + 1).padStart(2, '0');
+            const year = d.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
         const occupiedSlots = useMemo(() => {
             if (!sector || !date) return [];
             const key = `${sector.id}_${formatDateKey(date)}`;
@@ -114,7 +123,7 @@ const AgendamentoScreen = () => {
                         style={[styles.input, { justifyContent: 'center' }]}
                         onPress={() => setShowPicker(true)}
                     >
-                        <Text>{date ? formatDateKey(date) : 'Selecionar data'}</Text>
+                        <Text>{date ? formatDateForDisplay(date) : 'Selecionar data'}</Text>
                     </TouchableOpacity>
 
                     {showPicker && (

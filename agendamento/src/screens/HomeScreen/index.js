@@ -44,6 +44,15 @@ export default function HomeScreen() {
     }
   }
 
+  function formatStoredDateToDisplay(stored) {
+    // stored is expected as 'YYYY-MM-DD'
+    if (!stored) return '';
+    const parts = stored.split('-');
+    if (parts.length !== 3) return stored;
+    const [y, m, d] = parts;
+    return `${d}/${m}/${y}`;
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={['top','left','right']}>
       <HeaderTed />
@@ -70,7 +79,7 @@ export default function HomeScreen() {
               renderItem={({ item }) => (
                 <View style={styles.agendamentoItem}>
                   <View>
-                    <Text style={styles.agendamentoTitle}>{item.sectorName} • {item.date} {item.time}</Text>
+                    <Text style={styles.agendamentoTitle}>{item.sectorName} • {formatStoredDateToDisplay(item.date)} {item.time}</Text>
                     <Text style={styles.agendamentoSub}>Bloco {item.bloco} • Sala {item.sala}</Text>
                   </View>
                   <TouchableOpacity onPress={() => cancelar(item.id)} style={styles.cancelButton}>
