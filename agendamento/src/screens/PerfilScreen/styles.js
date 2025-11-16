@@ -6,12 +6,16 @@ const styles = StyleSheet.create({
         backgroundColor: colors.background,
         flex: 1,
     },
+    scrollContent: {
+        flexGrow: 1,
+        paddingBottom: 32,
+    },
         // Ted agora é renderizado via HeaderTed reutilizável
     perfilContainer: {
-        flex: 5,
         alignItems: 'center',
         justifyContent: 'center',
         paddingTop: 24,
+        paddingBottom: 24,
     },
     perfilImage: {
         aspectRatio: 1,
@@ -19,8 +23,9 @@ const styles = StyleSheet.create({
         maxWidth: 300,
     },
     textContainer: {
-        flex: 4,
         alignItems: 'center',
+        width: '100%',
+        paddingHorizontal: 16,
     },
     infoCard: {
         width: '90%',
@@ -48,6 +53,28 @@ const styles = StyleSheet.create({
         marginTop: 4,
         marginBottom: 4,
         lineHeight: 24,
+    },
+    logoutButton: {
+        width: '90%',
+        height: 50,
+        backgroundColor: '#dc3545',
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 24,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    logoutButtonDisabled: {
+        opacity: 0.6,
+    },
+    logoutButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '700',
     },
 });
 export default styles;

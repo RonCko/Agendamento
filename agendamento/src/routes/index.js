@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
+import SignUpScreen from '../screens/SignUpScreen';
 import Tabs from '../navigation/Tabs';
 import ChatScreen from '../screens/ChatScreen';
 
@@ -12,6 +13,7 @@ export default function Routes() {
         <NavigationContainer>
                         <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
                 <Stack.Screen name="Login" component={LoginScreen} />
+                <Stack.Screen name="SignUp" component={SignUpScreen} />
                 <Stack.Screen name="Tabs" component={Tabs} />
                 <Stack.Screen name="Chat" component={ChatScreen} options={{presentation: 'modal',headerShown: true, title: 'Ted', }}/>
                 {/* adicione outras telas aqui, se necessário */}
