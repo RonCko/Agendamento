@@ -5,7 +5,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from 'react-native';
 import HomeScreen from '../screens/HomeScreen';
 import SearchScreen from '../screens/SearchScreen';
-import AgendamentoScreen from '../screens/AgendamentoScreen';
 import PerfilScreen from '../screens/PerfilScreen';
 
 const Tab = createBottomTabNavigator();
@@ -39,9 +38,6 @@ export default function Tabs() {
             case 'SearchScreen':
               iconName = focused ? 'search' : 'search-outline';
               break;
-            case 'AgendamentoScreen':
-              iconName = focused ? 'calendar' : 'calendar-outline';
-              break;
             case 'PerfilScreen':
               iconName = focused ? 'person' : 'person-outline';
               break;
@@ -62,11 +58,6 @@ export default function Tabs() {
         name="SearchScreen"
         component={SearchScreen}
         options={{ title: 'Buscar', tabBarLabel: ({ color }) => <Text style={{ color }}>Buscar</Text> }}
-      />
-      <Tab.Screen
-        name="AgendamentoScreen"
-        component={AgendamentoScreen}
-        options={{ title: 'Agendamento', tabBarLabel: ({ color }) => <Text style={{ color }}>Agendamento</Text> }}
       />
       <Tab.Screen
         name="PerfilScreen"

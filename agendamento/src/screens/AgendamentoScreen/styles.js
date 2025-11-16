@@ -48,8 +48,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginTop: 12,
     },
+    confirmButtonDisabled: {
+        backgroundColor: colors.textSecondary + '40',
+        opacity: 0.6,
+    },
     confirmText: { color: colors.text, fontWeight: '700' },
     empty: { padding: 24, alignItems: 'center' },
+    loadingContainer: {
+        padding: 40,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    loadingText: {
+        marginTop: 12,
+        color: colors.textSecondary,
+    },
 });
 
 export default styles;

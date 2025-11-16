@@ -4,6 +4,7 @@ import LoginScreen from '../screens/LoginScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import Tabs from '../navigation/Tabs';
 import ChatScreen from '../screens/ChatScreen';
+import AgendamentoScreen from '../screens/AgendamentoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -15,6 +16,7 @@ export default function Routes() {
                 <Stack.Screen name="Login" component={LoginScreen} />
                 <Stack.Screen name="SignUp" component={SignUpScreen} />
                 <Stack.Screen name="Tabs" component={Tabs} />
+                <Stack.Screen name="AgendamentoScreen" component={AgendamentoScreen} options={{presentation: 'modal', headerShown: true, title: 'Agendamento' }}/>
                 <Stack.Screen name="Chat" component={ChatScreen} options={{presentation: 'modal',headerShown: true, title: 'Ted', }}/>
                 {/* adicione outras telas aqui, se necessário */}
                 {/* headerShown: false remove o header padrão do react navigation */}

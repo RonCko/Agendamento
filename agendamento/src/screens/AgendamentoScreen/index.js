@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,15 +6,16 @@ import {
     TouchableOpacity,
     Alert,
     Platform,
+    ActivityIndicator,
 } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { supabase } from '../../lib/supabase';
 import HeaderTed from '../../components/HeaderTed';
 import styles from './styles';
 
-const SLOT_ROW_HEIGHT = 64; // altura aproximada de uma linha de slots
+const SLOT_ROW_HEIGHT = 64;
 const VISIBLE_ROWS = 3;
 
 function generateSlots(startHour = 7, endHour = 23, stepMinutes = 30) {
@@ -29,153 +30,243 @@ function generateSlots(startHour = 7, endHour = 23, stepMinutes = 30) {
     return slots;
 }
 
-// Mock de horários ocupados por setor+data (chave: `${sectorId}_${date}`)
-const MOCK_OCCUPIED = {
-    // exemplo: para DEPED em 2025-10-15 alguns horários já estão ocupados
-    'deped_2025-10-15': ['09:00', '10:30', '14:00', '18:30'],
-    'nuape_2025-10-15': ['07:30', '08:00', '12:00'],
-};
-
 const AgendamentoScreen = () => {
     const route = useRoute();
     const sector = route.params?.sector;
     const navigation = useNavigation();
-        const [selectedSlot, setSelectedSlot] = useState(null);
-        const [date, setDate] = useState(null); // Date object
-        const [showPicker, setShowPicker] = useState(false);
+    const [selectedSlot, setSelectedSlot] = useState(null);
+    const [date, setDate] = useState(null);
+    const [showPicker, setShowPicker] = useState(false);
+    const [occupiedSlots, setOccupiedSlots] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [userSession, setUserSession] = useState(null);
+    const [alunoId, setAlunoId] = useState(null);
 
     const allSlots = useMemo(() => generateSlots(7, 23, 30), []);
 
-        function formatDateKey(d) {
-            if (!d) return '';
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const day = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${day}`;
-        }
+    useEffect(() => {
+        loadUserSession();
+    }, []);
 
-        // formata uma Date para exibição DD/MM/AAAA (apresentação somente)
-        function formatDateForDisplay(d) {
-            if (!d) return '';
-            const day = String(d.getDate()).padStart(2, '0');
-            const month = String(d.getMonth() + 1).padStart(2, '0');
-            const year = d.getFullYear();
-            return `${day}/${month}/${year}`;
+    useEffect(() => {
+        if (date && sector) {
+            fetchOccupiedSlots();
         }
+    }, [date, sector]);
 
-        const occupiedSlots = useMemo(() => {
-            if (!sector || !date) return [];
-            const key = `${sector.id}_${formatDateKey(date)}`;
-            return MOCK_OCCUPIED[key] || [];
-        }, [sector, date]);
+    async function loadUserSession() {
+        const { data: { session } } = await supabase.auth.getSession();
+        setUserSession(session);
+        
+        if (session?.user?.email) {
+            // Buscar o ID do aluno na tabela aluno usando o email
+            const { data, error } = await supabase
+                .from('aluno')
+                .select('id')
+                .eq('email', session.user.email)
+                .single();
+            
+            if (data && !error) {
+                setAlunoId(data.id);
+            } else {
+                console.error('Erro ao buscar ID do aluno:', error);
+            }
+        }
+    }
+
+    async function fetchOccupiedSlots() {
+        if (!date || !sector?.id) return;
+
+        try {
+            setLoading(true);
+            const dateStr = formatDateKey(date);
+            
+            // Buscar agendamentos do dia para o setor específico
+            const { data, error } = await supabase
+                .from('agendamento')
+                .select('data_hora')
+                .eq('setor_id', sector.id)
+                .gte('data_hora', `${dateStr} 00:00:00`)
+                .lte('data_hora', `${dateStr} 23:59:59`);
+
+            if (error) {
+                console.error('Erro ao buscar agendamentos:', error);
+                return;
+            }
+
+            // Extrair os horários ocupados
+            const occupied = data.map(item => {
+                const datetime = new Date(item.data_hora);
+                const hour = String(datetime.getHours()).padStart(2, '0');
+                const minute = String(datetime.getMinutes()).padStart(2, '0');
+                return `${hour}:${minute}`;
+            });
+
+            setOccupiedSlots(occupied);
+        } catch (error) {
+            console.error('Erro ao buscar horários ocupados:', error);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function formatDateKey(d) {
+        if (!d) return '';
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    }
+
+    function formatDateForDisplay(d) {
+        if (!d) return '';
+        const day = String(d.getDate()).padStart(2, '0');
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const year = d.getFullYear();
+        return `${day}/${month}/${year}`;
+    }
 
     const availableSlots = useMemo(() => {
         if (!date) return [];
         return allSlots.filter((s) => !occupiedSlots.includes(s));
     }, [allSlots, occupiedSlots, date]);
 
-    function confirm() {
-        if (!date) return Alert.alert('Selecione uma data');
-        if (!selectedSlot) return Alert.alert('Selecione um horário');
-        const agendamento = {
-            id: `${sector?.id}_${formatDateKey(date)}_${selectedSlot}`,
-            sectorId: sector?.id,
-            sectorName: sector?.name,
-            bloco: sector?.bloco,
-            sala: sector?.sala,
-            date: formatDateKey(date),
-            time: selectedSlot,
-        };
+    async function confirm() {
+        if (!date) return Alert.alert('Atenção', 'Selecione uma data');
+        if (!selectedSlot) return Alert.alert('Atenção', 'Selecione um horário');
+        if (!alunoId) return Alert.alert('Erro', 'Usuário não identificado. Faça login novamente.');
 
-        // salvar em AsyncStorage e voltar para Home
-        AsyncStorage.getItem('AGENDAMENTOS')
-            .then((res) => {
-                const arr = res ? JSON.parse(res) : [];
-                arr.push(agendamento);
-                return AsyncStorage.setItem('AGENDAMENTOS', JSON.stringify(arr));
-            })
-            .then(() => {
-                Alert.alert('Agendamento salvo', 'Seu agendamento foi salvo com sucesso.');
-                // navegar para a aba Home para ver o agendamento
-                try {
-                    navigation.navigate('HomeScreen');
-                } catch (e) {
-                    // fallback: nada
-                }
-            })
-            .catch((err) => {
-                console.error(err);
-                Alert.alert('Erro', 'Não foi possível salvar o agendamento.');
-            });
+        try {
+            // Criar data_hora no formato timestamp
+            const [hour, minute] = selectedSlot.split(':');
+            const dataHora = new Date(date);
+            dataHora.setHours(parseInt(hour), parseInt(minute), 0, 0);
+
+            // Inserir agendamento no banco
+            const { data, error } = await supabase
+                .from('agendamento')
+                .insert([{
+                    aluno_id: alunoId,
+                    setor_id: sector.id,
+                    data_hora: dataHora.toISOString(),
+                    status: 'pendente'
+                }])
+                .select();
+
+            if (error) {
+                console.error('Erro ao criar agendamento:', error);
+                Alert.alert('Erro', 'Não foi possível criar o agendamento. Tente novamente.');
+                return;
+            }
+
+            Alert.alert(
+                'Sucesso!', 
+                'Seu agendamento foi realizado com sucesso.',
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => {
+                            navigation.navigate('Tabs', { screen: 'HomeScreen' });
+                        }
+                    }
+                ]
+            );
+        } catch (error) {
+            console.error('Erro ao confirmar agendamento:', error);
+            Alert.alert('Erro', 'Ocorreu um erro ao salvar o agendamento.');
+        }
     }
 
     return (
         <SafeAreaView style={styles.container}>
             <HeaderTed />
             <View style={styles.pagePad}>
-                <Text style={styles.title}>Agendar</Text>
-                <Text style={styles.subtitleHeader}>{sector?.name || 'Setor'}</Text>
-                <Text style={styles.subtitle}>Bloco {sector?.bloco} • Sala {sector?.sala}</Text>
+                <Text style={styles.title}>Agendar Atendimento</Text>
+                {sector ? (
+                    <>
+                        <Text style={styles.subtitleHeader}>{sector.nome}</Text>
+                        {sector.localiza && (
+                            <Text style={styles.subtitle}>{sector.localiza}</Text>
+                        )}
+                    </>
+                ) : (
+                    <Text style={styles.subtitle}>Nenhum setor selecionado</Text>
+                )}
 
-                    <View style={{ marginTop: 8 }} />
+                <View style={{ marginTop: 16 }} />
 
-                    <TouchableOpacity
-                        style={[styles.input, { justifyContent: 'center' }]}
-                        onPress={() => setShowPicker(true)}
-                    >
-                        <Text>{date ? formatDateForDisplay(date) : 'Selecionar data'}</Text>
-                    </TouchableOpacity>
+                <TouchableOpacity
+                    style={[styles.input, { justifyContent: 'center' }]}
+                    onPress={() => setShowPicker(true)}
+                >
+                    <Text>{date ? formatDateForDisplay(date) : 'Selecionar data'}</Text>
+                </TouchableOpacity>
 
-                    {showPicker && (
-                        <DateTimePicker
-                            value={date || new Date()}
-                            mode="date"
-                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                            onChange={(event, selected) => {
-                                setShowPicker(Platform.OS === 'ios');
-                                if (selected) {
-                                    setDate(selected);
-                                    setSelectedSlot(null);
-                                }
-                            }}
-                        />
-                    )}
-
-            <Text style={styles.sectionTitle}>Horários disponíveis</Text>
-
-            {!date ? (
-                <View style={styles.empty}><Text>Informe uma data para ver os horários livres.</Text></View>
-            ) : availableSlots.length === 0 ? (
-                <View style={styles.empty}><Text>Não há horários livres para essa data.</Text></View>
-            ) : (
-                <View style={[styles.slotsContainer, { height: SLOT_ROW_HEIGHT * VISIBLE_ROWS }]}>
-                    <FlatList
-                        data={availableSlots}
-                        keyExtractor={(s) => s}
-                        numColumns={3}
-                        renderItem={({ item }) => {
-                            const selected = item === selectedSlot;
-                            return (
-                                <TouchableOpacity
-                                    onPress={() => setSelectedSlot(item)}
-                                    style={[styles.slot, selected && styles.slotSelected]}
-                                >
-                                    <Text style={selected ? styles.slotTextSelected : styles.slotText}>{item}</Text>
-                                </TouchableOpacity>
-                            );
+                {showPicker && (
+                    <DateTimePicker
+                        value={date || new Date()}
+                        mode="date"
+                        display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                        minimumDate={new Date()}
+                        onChange={(event, selected) => {
+                            setShowPicker(Platform.OS === 'ios');
+                            if (selected) {
+                                setDate(selected);
+                                setSelectedSlot(null);
+                            }
                         }}
                     />
-                </View>
-            )}
+                )}
 
-            <TouchableOpacity style={styles.confirmButton} onPress={confirm}>
-                <Text style={styles.confirmText}>Confirmar agendamento</Text>
-            </TouchableOpacity>
-        </View>
+                <Text style={styles.sectionTitle}>Horários disponíveis</Text>
+
+                {loading ? (
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color="#007AFF" />
+                        <Text style={styles.loadingText}>Carregando horários...</Text>
+                    </View>
+                ) : !date ? (
+                    <View style={styles.empty}>
+                        <Text>Informe uma data para ver os horários livres.</Text>
+                    </View>
+                ) : availableSlots.length === 0 ? (
+                    <View style={styles.empty}>
+                        <Text>Não há horários livres para essa data.</Text>
+                    </View>
+                ) : (
+                    <View style={[styles.slotsContainer, { height: SLOT_ROW_HEIGHT * VISIBLE_ROWS }]}>
+                        <FlatList
+                            data={availableSlots}
+                            keyExtractor={(s) => s}
+                            numColumns={3}
+                            renderItem={({ item }) => {
+                                const selected = item === selectedSlot;
+                                return (
+                                    <TouchableOpacity
+                                        onPress={() => setSelectedSlot(item)}
+                                        style={[styles.slot, selected && styles.slotSelected]}
+                                    >
+                                        <Text style={selected ? styles.slotTextSelected : styles.slotText}>
+                                            {item}
+                                        </Text>
+                                    </TouchableOpacity>
+                                );
+                            }}
+                        />
+                    </View>
+                )}
+
+                <TouchableOpacity 
+                    style={[styles.confirmButton, (!date || !selectedSlot) && styles.confirmButtonDisabled]} 
+                    onPress={confirm}
+                    disabled={!date || !selectedSlot}
+                >
+                    <Text style={styles.confirmText}>Confirmar agendamento</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     );
 };
-
 
 
 export default AgendamentoScreen;
