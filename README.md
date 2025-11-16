@@ -12,3 +12,5 @@ Além disso, será avaliada a viabilidade de integração ou adaptação do sist
 Em resumo, o aplicativo visa otimizar a organização dos atendimentos, reduzir a burocracia, melhorar a comunicação entre estudantes e servidores e fornecer uma solução tecnológica confiável para o DEPED.
 
 Link Figma protótipos: https://www.figma.com/design/Xxmg9CIG7ai9eHyDOkdUF5/AgendaDEPED?node-id=0-1&p=f&t=GxJi1QjIIyQ0jlCt-0
+
+Senha para acesso ao supabase: agendamentoutfpr
