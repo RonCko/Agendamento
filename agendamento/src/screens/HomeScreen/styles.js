@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
   },
   calendarContainer: {
-    flex: 1,
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
@@ -22,7 +21,13 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     minWidth: '100%',
     maxWidth: '100%',
-    marginBottom: 24,
+    marginBottom: 16,
+  },
+  agendamentosSection: {
+    flex: 1,
+    width: '100%',
+    paddingHorizontal: 16,
+    paddingTop: 8,
   },
   textContainerCustom: {
     marginTop: 8,
@@ -33,8 +38,8 @@ const styles = StyleSheet.create({
   titleAtendimentos: {
     fontSize: 17,
     fontWeight: 'bold',
-    marginBottom: 6,
-    textAlign: 'center',
+    marginBottom: 12,
+    textAlign: 'left',
     color: colors.text,
   },
   textAtendimentos: {
