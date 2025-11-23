@@ -71,10 +71,10 @@ const LoginScreen = ({ navigation }) => {
 
         if (error) throw error;
 
-        // Verificar se o usuário existe na tabela tec_adm
+        // Verificar se o usuário existe na tabela tec_adm e buscar role
         const { data: tecAdm, error: tecError } = await supabase
           .from('tec_adm')
-          .select('id')
+          .select('id, role')
           .eq('email', email)
           .single();
 
@@ -84,7 +84,12 @@ const LoginScreen = ({ navigation }) => {
         }
 
         if (data.session) {
-          navigation.replace('TabsTA');
+          // Redirecionar baseado no role
+          if (tecAdm.role === 'admin') {
+            navigation.replace('TabsAdmin');
+          } else {
+            navigation.replace('TabsTA');
+          }
         }
       }
     } catch (error) {

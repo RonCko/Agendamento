@@ -5,6 +5,7 @@ import SignUpScreen from '../screens/SignUpScreen';
 import SignUpTAScreen from '../screens/SignUpTAScreen';
 import Tabs from '../navigation/Tabs';
 import TabsTA from '../navigation/TabsTA';
+import TabsAdmin from '../navigation/TabsAdmin';
 import ChatScreen from '../screens/ChatScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
 
@@ -19,6 +20,7 @@ export default function Routes() {
                 <Stack.Screen name="SignUpTA" component={SignUpTAScreen} />
                 <Stack.Screen name="Tabs" component={Tabs} />
                 <Stack.Screen name="TabsTA" component={TabsTA} />
+                <Stack.Screen name="TabsAdmin" component={TabsAdmin} />
                 <Stack.Screen 
                     name="AgendamentoScreen" 
                     component={AgendamentoScreen} 

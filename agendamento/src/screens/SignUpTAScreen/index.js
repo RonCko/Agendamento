@@ -80,6 +80,7 @@ const SignUpTAScreen = ({ navigation }) => {
           nome: name,
           email: email,
           setor_id: setorId,
+          role: 'ta',
           auth_user_id: authData.user.id,
         }]);
 
