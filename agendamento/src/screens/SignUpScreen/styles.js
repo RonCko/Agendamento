@@ -82,6 +82,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     textDecorationLine: 'underline',
   },
+  taButton: {
+    marginTop: 20,
+    padding: 12,
+    borderTopWidth: 1,
+    borderTopColor: colors.border,
+    width: '90%',
+    alignItems: 'center',
+  },
+  taButtonText: {
+    color: '#666',
+    fontSize: 14,
+    textAlign: 'center',
+  },
 });
 
 export default styles;

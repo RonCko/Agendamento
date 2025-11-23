@@ -39,7 +39,6 @@ const AgendamentoScreen = () => {
     const [showPicker, setShowPicker] = useState(false);
     const [occupiedSlots, setOccupiedSlots] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [userSession, setUserSession] = useState(null);
     const [alunoId, setAlunoId] = useState(null);
 
     const allSlots = useMemo(() => generateSlots(7, 23, 30), []);
@@ -56,7 +55,6 @@ const AgendamentoScreen = () => {
 
     async function loadUserSession() {
         const { data: { session } } = await supabase.auth.getSession();
-        setUserSession(session);
         
         if (session?.user?.email) {
             // Buscar o ID do aluno na tabela aluno usando o email

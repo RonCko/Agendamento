@@ -1,7 +1,7 @@
-import { StyleSheet, Dimensions } from "react-native";
-import colors from '../../../colors/colors';
+import { StyleSheet } from "react-native";
+import colors from '../../colors/colors';
 
-const styles = StyleSheet.create({
+const perfilStyles = StyleSheet.create({
     container: {
         backgroundColor: colors.background,
         flex: 1,
@@ -10,7 +10,6 @@ const styles = StyleSheet.create({
         flexGrow: 1,
         paddingBottom: 32,
     },
-        // Ted agora é renderizado via HeaderTed reutilizável
     perfilContainer: {
         alignItems: 'center',
         justifyContent: 'center',
@@ -77,4 +76,5 @@ const styles = StyleSheet.create({
         fontWeight: '700',
     },
 });
-export default styles;
+
+export default perfilStyles;

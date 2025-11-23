@@ -6,16 +6,16 @@ import { supabase } from '../../lib/supabase';
 import HeaderTed from '../../components/HeaderTed';
 import styles from '../../styles/perfilStyles';
 
-const PerfilScreen = () => {
+const PerfilScreenTA = () => {
     const { width } = useWindowDimensions();
     const navigation = useNavigation();
     const avatarSize = Math.min(width * 0.7, 300);
     const [loading, setLoading] = useState(false);
     const [userData, setUserData] = useState({
         name: 'Carregando...',
-        ra: '...',
         email: '...',
-        curso: 'Carregando...',
+        setor: 'Carregando...',
+        localiza: '...',
     });
 
     useEffect(() => {
@@ -27,28 +27,33 @@ const PerfilScreen = () => {
             const { data: { user } } = await supabase.auth.getUser();
             
             if (user) {
-                // Buscar dados completos da tabela aluno
-                const { data: aluno, error } = await supabase
-                    .from('aluno')
-                    .select('*')
+                // Buscar dados completos da tabela tec_adm com setor
+                const { data: tecAdm, error } = await supabase
+                    .from('tec_adm')
+                    .select(`
+                        *,
+                        setor (
+                            nome,
+                            localiza
+                        )
+                    `)
                     .eq('auth_user_id', user.id)
                     .single();
 
                 if (error) {
-                    console.error('Erro ao carregar dados do aluno:', error);
-                    // Fallback para metadados se ainda não vinculado
+                    console.error('Erro ao carregar dados do TA:', error);
                     setUserData({
                         name: user.user_metadata?.name || 'Nome não disponível',
-                        ra: user.user_metadata?.ra || 'RA não disponível',
-                        email: user.user_metadata?.email_institucional || user.email || 'Email não disponível',
-                        curso: user.user_metadata?.curso || 'Engenharia de Software',
+                        email: user.email || 'Email não disponível',
+                        setor: 'Setor não disponível',
+                        localiza: '...',
                     });
-                } else if (aluno) {
+                } else if (tecAdm) {
                     setUserData({
-                        name: aluno.nome,
-                        ra: `a${aluno.RA}`, // Adiciona 'a' na frente do número
-                        email: aluno.email,
-                        curso: aluno.curso,
+                        name: tecAdm.nome,
+                        email: tecAdm.email,
+                        setor: tecAdm.setor?.nome || 'Setor não informado',
+                        localiza: tecAdm.setor?.localiza || 'Localização não informada',
                     });
                 }
             }
@@ -90,6 +95,7 @@ const PerfilScreen = () => {
             ]
         );
     };
+
     return (
         <SafeAreaView style={styles.container} edges={['top','left','right']}>
             <HeaderTed />
@@ -112,14 +118,14 @@ const PerfilScreen = () => {
                         <Text style={styles.descText}>Nome</Text>
                         <Text style={styles.text}>{userData.name}</Text>
 
-                        <Text style={styles.descText}>R.A</Text>
-                        <Text style={styles.text}>{userData.ra}</Text>
-
                         <Text style={styles.descText}>E-mail</Text>
                         <Text style={styles.text}>{userData.email}</Text>
 
-                        <Text style={styles.descText}>Curso</Text>
-                        <Text style={styles.text}>{userData.curso}</Text>
+                        <Text style={styles.descText}>Setor</Text>
+                        <Text style={styles.text}>{userData.setor}</Text>
+
+                        <Text style={styles.descText}>Localização</Text>
+                        <Text style={styles.text}>{userData.localiza}</Text>
                     </View>
 
                     <TouchableOpacity
@@ -139,4 +145,4 @@ const PerfilScreen = () => {
     );
 };
 
-export default PerfilScreen;
+export default PerfilScreenTA;

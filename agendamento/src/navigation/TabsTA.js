@@ -3,17 +3,16 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from 'react-native';
-import HomeScreen from '../screens/HomeScreen';
-import SearchScreen from '../screens/SearchScreen';
-import PerfilScreen from '../screens/PerfilScreen';
+import HomeScreenTA from '../screens/HomeScreenTA';
+import PerfilScreenTA from '../screens/PerfilScreenTA';
 
 const Tab = createBottomTabNavigator();
 
-export default function Tabs() {
+export default function TabsTA() {
   const insets = useSafeAreaInsets();
   return (
     <Tab.Navigator
-      initialRouteName="HomeScreen"
+      initialRouteName="HomeScreenTA"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: '#000',
@@ -30,13 +29,10 @@ export default function Tabs() {
         tabBarIcon: ({ color, size, focused }) => {
           let iconName = 'ellipse';
           switch (route.name) {
-            case 'HomeScreen':
-              iconName = focused ? 'home' : 'home-outline';
+            case 'HomeScreenTA':
+              iconName = focused ? 'list' : 'list-outline';
               break;
-            case 'SearchScreen':
-              iconName = focused ? 'search' : 'search-outline';
-              break;
-            case 'PerfilScreen':
+            case 'PerfilScreenTA':
               iconName = focused ? 'person' : 'person-outline';
               break;
           }
@@ -45,18 +41,13 @@ export default function Tabs() {
       })}
     >
       <Tab.Screen
-        name="HomeScreen"
-        component={HomeScreen}
-        options={{ title: 'Início', tabBarLabel: ({ color }) => <Text style={{ color }}>Início</Text> }}
+        name="HomeScreenTA"
+        component={HomeScreenTA}
+        options={{ title: 'Agendamentos', tabBarLabel: ({ color }) => <Text style={{ color }}>Agendamentos</Text> }}
       />
       <Tab.Screen
-        name="SearchScreen"
-        component={SearchScreen}
-        options={{ title: 'Buscar', tabBarLabel: ({ color }) => <Text style={{ color }}>Buscar</Text> }}
-      />
-      <Tab.Screen
-        name="PerfilScreen"
-        component={PerfilScreen}
+        name="PerfilScreenTA"
+        component={PerfilScreenTA}
         options={{ title: 'Perfil', tabBarLabel: ({ color }) => <Text style={{ color }}>Perfil</Text> }}
       />
     </Tab.Navigator>

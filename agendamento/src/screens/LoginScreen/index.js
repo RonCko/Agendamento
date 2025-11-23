@@ -6,7 +6,9 @@ import styles from './styles';
 
 const LoginScreen = ({ navigation }) => {
   const insets = useSafeAreaInsets();
+  const [loginType, setLoginType] = useState('aluno'); // 'aluno' ou 'ta'
   const [ra, setRa] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   
@@ -21,41 +23,69 @@ const LoginScreen = ({ navigation }) => {
   };
 
   const handleLogin = async () => {
-    if (!ra || !password) {
-      Alert.alert('Erro', 'Por favor, preencha R.A e senha');
-      return;
+    if (loginType === 'aluno') {
+      if (!ra || !password) {
+        Alert.alert('Erro', 'Por favor, preencha R.A e senha');
+        return;
+      }
+    } else {
+      if (!email || !password) {
+        Alert.alert('Erro', 'Por favor, preencha email e senha');
+        return;
+      }
     }
 
     setLoading(true);
 
     try {
-      // Extrair apenas números do RA (remover o 'a')
-      const raNumber = ra.replace(/[^0-9]/g, '');
+      if (loginType === 'aluno') {
+        // Login como aluno (usando RA)
+        const raNumber = ra.replace(/[^0-9]/g, '');
 
-      // Buscar o email associado ao RA na tabela aluno
-      const { data: aluno, error: alunoError } = await supabase
-        .from('aluno')
-        .select('email')
-        .eq('RA', raNumber)
-        .single();
+        const { data: aluno, error: alunoError } = await supabase
+          .from('aluno')
+          .select('email')
+          .eq('RA', raNumber)
+          .single();
 
-      if (alunoError || !aluno) {
-        throw new Error('R.A não encontrado. Verifique suas credenciais ou cadastre-se primeiro.');
-      }
+        if (alunoError || !aluno) {
+          throw new Error('R.A não encontrado. Verifique suas credenciais ou cadastre-se primeiro.');
+        }
 
-      // Autenticar usando o email encontrado
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: aluno.email,
-        password,
-      });
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email: aluno.email,
+          password,
+        });
 
-      if (error) {
-        throw error;
-      }
+        if (error) throw error;
 
-      if (data.session) {
-        // Login bem-sucedido
-        navigation.replace('Tabs');
+        if (data.session) {
+          navigation.replace('Tabs');
+        }
+      } else {
+        // Login como TA (usando email)
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+
+        // Verificar se o usuário existe na tabela tec_adm
+        const { data: tecAdm, error: tecError } = await supabase
+          .from('tec_adm')
+          .select('id')
+          .eq('email', email)
+          .single();
+
+        if (tecError || !tecAdm) {
+          await supabase.auth.signOut();
+          throw new Error('Usuário não encontrado como Técnico Administrativo.');
+        }
+
+        if (data.session) {
+          navigation.replace('TabsTA');
+        }
       }
     } catch (error) {
       Alert.alert(
@@ -74,14 +104,51 @@ const LoginScreen = ({ navigation }) => {
           source={require('../../../assets/images/logo_utfpr.png')}
           style={styles.logo}
         />
-        <TextInput
-          style={styles.input}
-          placeholder="R.A"
-          placeholderTextColor="#888"
-          keyboardType='numeric'
-          value={ra}
-          onChangeText={handleRaChange}
-        />
+        
+        <View style={styles.toggleContainer}>
+          <TouchableOpacity
+            style={[styles.toggleButton, loginType === 'aluno' && styles.toggleButtonActive]}
+            onPress={() => setLoginType('aluno')}
+            disabled={loading}
+          >
+            <Text style={[styles.toggleText, loginType === 'aluno' && styles.toggleTextActive]}>
+              Aluno
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.toggleButton, loginType === 'ta' && styles.toggleButtonActive]}
+            onPress={() => setLoginType('ta')}
+            disabled={loading}
+          >
+            <Text style={[styles.toggleText, loginType === 'ta' && styles.toggleTextActive]}>
+              Técnico Adm
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {loginType === 'aluno' ? (
+          <TextInput
+            style={styles.input}
+            placeholder="R.A"
+            placeholderTextColor="#888"
+            keyboardType='numeric'
+            value={ra}
+            onChangeText={handleRaChange}
+            editable={!loading}
+          />
+        ) : (
+          <TextInput
+            style={styles.input}
+            placeholder="Email institucional"
+            placeholderTextColor="#888"
+            keyboardType='email-address'
+            value={email}
+            onChangeText={setEmail}
+            editable={!loading}
+            autoCapitalize='none'
+          />
+        )}
+        
         <TextInput
           style={styles.input}
           placeholder="Senha"

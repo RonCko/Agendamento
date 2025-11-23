@@ -1,37 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, TouchableOpacity, Text, Image, Alert, ActivityIndicator, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Picker } from '@react-native-picker/picker';
 import { supabase } from '../../lib/supabase';
 import styles from './styles';
 
-const SignUpScreen = ({ navigation }) => {
-  const insets = useSafeAreaInsets();
-  const [ra, setRa] = useState('');
+const SignUpTAScreen = ({ navigation }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [setorId, setSetorId] = useState('');
+  const [setores, setSetores] = useState([]);
   const [loading, setLoading] = useState(false);
-  
-  const handleRaChange = (text) => {
-    const numbers = text.replace(/[^0-9]/g, '');
-    if (numbers.length > 0) {
-      setRa('a' + numbers);
-    } else {
-      setRa('');
+
+  useEffect(() => {
+    loadSetores();
+  }, []);
+
+  async function loadSetores() {
+    try {
+      const { data, error } = await supabase
+        .from('setor')
+        .select('id, nome')
+        .order('nome');
+
+      if (error) throw error;
+      setSetores(data || []);
+    } catch (error) {
+      console.error('Erro ao carregar setores:', error);
     }
-  };
+  }
 
   const handleSignUp = async () => {
     // Validações
-    if (!ra || !name || !email || !password || !confirmPassword) {
+    if (!name || !email || !password || !confirmPassword || !setorId) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos');
       return;
     }
 
     // Validar formato do email institucional
-    if (!email.endsWith('@alunos.utfpr.edu.br')) {
-      Alert.alert('Erro', 'Por favor, use seu email institucional (@alunos.utfpr.edu.br)');
+    if (!email.endsWith('@utfpr.edu.br')) {
+      Alert.alert('Erro', 'Por favor, use seu email institucional (@utfpr.edu.br)');
       return;
     }
 
@@ -48,29 +58,36 @@ const SignUpScreen = ({ navigation }) => {
     setLoading(true);
 
     try {
-      // Extrair apenas números do RA (remover o 'a')
-      const raNumber = ra.replace(/[^0-9]/g, '');
-
-      const { data, error } = await supabase.auth.signUp({
+      // Criar usuário no Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            ra: ra, // Guarda com 'a' para exibição
-            ra_number: raNumber, // Guarda só números para o banco
             name: name,
-            email_institucional: email,
+            user_type: 'tec_adm',
+            setor_id: setorId,
           },
         },
       });
 
-      if (error) {
-        throw error;
-      }
+      if (authError) throw authError;
+
+      // Criar registro na tabela tec_adm
+      const { error: tecError } = await supabase
+        .from('tec_adm')
+        .insert([{
+          nome: name,
+          email: email,
+          setor_id: setorId,
+          auth_user_id: authData.user.id,
+        }]);
+
+      if (tecError) throw tecError;
 
       Alert.alert(
         'Cadastro realizado!',
-        'Sua conta foi criada com sucesso. Faça login para continuar.',
+        'Sua conta de Técnico Administrativo foi criada com sucesso.',
         [
           {
             text: 'OK',
@@ -103,19 +120,8 @@ const SignUpScreen = ({ navigation }) => {
               source={require('../../../assets/images/logo_utfpr.png')}
               style={styles.logo}
             />
-            <Text style={styles.title}>Criar conta</Text>
-            <Text style={styles.subtitle}>Preencha seus dados para se cadastrar</Text>
-
-            <TextInput
-              style={styles.input}
-              placeholder="R.A"
-              placeholderTextColor="#888"
-              keyboardType='numeric'
-              value={ra}
-              onChangeText={handleRaChange}
-              editable={!loading}
-              autoCapitalize='none'
-            />
+            <Text style={styles.title}>Cadastro TA</Text>
+            <Text style={styles.subtitle}>Técnico Administrativo</Text>
 
             <TextInput
               style={styles.input}
@@ -137,6 +143,20 @@ const SignUpScreen = ({ navigation }) => {
               editable={!loading}
               autoCapitalize='none'
             />
+
+            <View style={styles.pickerContainer}>
+              <Picker
+                selectedValue={setorId}
+                onValueChange={(itemValue) => setSetorId(itemValue)}
+                enabled={!loading}
+                style={styles.picker}
+              >
+                <Picker.Item label="Selecione o setor" value="" />
+                {setores.map((setor) => (
+                  <Picker.Item key={setor.id} label={setor.nome} value={setor.id} />
+                ))}
+              </Picker>
+            </View>
 
             <TextInput
               style={styles.input}
@@ -181,14 +201,6 @@ const SignUpScreen = ({ navigation }) => {
             >
               <Text style={styles.linkText}>Já tem uma conta? Faça login</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.taButton}
-              onPress={() => navigation.navigate('SignUpTA')}
-              disabled={loading}
-            >
-              <Text style={styles.taButtonText}>Cadastro para Técnico Administrativo</Text>
-            </TouchableOpacity>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -196,4 +208,4 @@ const SignUpScreen = ({ navigation }) => {
   );
 };
 
-export default SignUpScreen;
+export default SignUpTAScreen;

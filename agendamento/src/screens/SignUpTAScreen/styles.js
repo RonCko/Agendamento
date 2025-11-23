@@ -11,7 +11,12 @@ const styles = StyleSheet.create({
     paddingBottom: 0,
     paddingHorizontal: 16,
   },
-  flex: { flex: 1 },
+  flex: { flex: 1, width: '100%' },
+  scrollContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    paddingBottom: 24,
+  },
   content: {
     flex: 1,
     justifyContent: 'center',
@@ -23,37 +28,20 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     aspectRatio: 2,
     height: undefined,
-    marginBottom: 16,
+    marginBottom: 8,
     resizeMode: 'contain',
   },
-  toggleContainer: {
-    flexDirection: 'row',
-    width: '90%',
-    maxWidth: 420,
-    marginBottom: 20,
-    borderRadius: 10,
-    backgroundColor: colors.inputBackground,
-    borderWidth: 1,
-    borderColor: colors.border,
-    overflow: 'hidden',
-  },
-  toggleButton: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  toggleButtonActive: {
-    backgroundColor: colors.primary,
-  },
-  toggleText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#666',
-  },
-  toggleTextActive: {
-    color: '#000',
+  title: {
+    fontSize: 24,
     fontWeight: '700',
+    color: colors.text,
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 24,
+    textAlign: 'center',
   },
   input: {
     width: '90%',
@@ -66,6 +54,21 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     fontSize: 16,
     backgroundColor: colors.inputBackground,
+  },
+  pickerContainer: {
+    width: '90%',
+    maxWidth: 420,
+    height: 50,
+    borderColor: colors.border,
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 16,
+    backgroundColor: colors.inputBackground,
+    justifyContent: 'center',
+  },
+  picker: {
+    width: '100%',
+    height: '100%',
   },
   button: {
     width: '90%',
@@ -85,34 +88,14 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  footerContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  signupButton: {
-    alignSelf: 'center',
-    marginBottom: 8,
+  linkButton: {
+    marginTop: 8,
     padding: 10,
   },
-  signupButtonText: {
+  linkText: {
     color: colors.text,
     fontSize: 15,
-    fontWeight: '600',
     textDecorationLine: 'underline',
-  },
-  forgotButton: {
-    alignSelf: 'center',
-    marginBottom: 0,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    width: '100%',
-    alignItems: 'center',
-  },
-  forgotButtonText: {
-    color: colors.text,
-    fontSize: 16,
   },
 });
 

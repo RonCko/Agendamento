@@ -1,8 +1,6 @@
 import { StyleSheet } from 'react-native';
 import colors from '../../../colors/colors';
 
-
-
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: colors.background },
     pagePad: { paddingHorizontal: 16 },
@@ -19,7 +17,6 @@ const styles = StyleSheet.create({
     },
     sectionTitle: { fontSize: 16, fontWeight: '600', marginVertical: 8 },
     slotsContainer: {
-        // altura fixa para mostrar 3 linhas e permitir scroll
         marginBottom: 12,
         borderRadius: 8,
         backgroundColor: colors.background

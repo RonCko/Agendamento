@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions } from "react-native";
+import { StyleSheet } from "react-native";
 import colors from '../../../colors/colors';
 
 const styles = StyleSheet.create({
@@ -28,12 +28,6 @@ const styles = StyleSheet.create({
     width: '100%',
     paddingHorizontal: 16,
     paddingTop: 8,
-  },
-  textContainerCustom: {
-    marginTop: 8,
-    alignItems: 'center',
-    width: '100%',
-    paddingHorizontal: 16,
   },
   titleAtendimentos: {
     fontSize: 17,
@@ -67,8 +61,6 @@ const styles = StyleSheet.create({
   agendamentoSub: { color: '#666', marginTop: 2 },
   cancelButton: { paddingHorizontal: 12, paddingVertical: 6, borderRadius: 6, backgroundColor: '#ffecec' },
   cancelText: { color: '#c0392b', fontWeight: '700' },
-  
-
 });
 
 export default styles;
