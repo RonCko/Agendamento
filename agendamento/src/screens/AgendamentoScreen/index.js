@@ -49,10 +49,10 @@ const AgendamentoScreen = () => {
     }, []);
 
     useEffect(() => {
-        if (date && sector) {
+        if (date && sector && alunoId) {
             fetchOccupiedSlots();
         }
-    }, [date, sector]);
+    }, [date, sector, alunoId]);
 
     async function loadUserSession() {
         const { data: { session } } = await supabase.auth.getSession();
@@ -75,32 +75,48 @@ const AgendamentoScreen = () => {
     }
 
     async function fetchOccupiedSlots() {
-        if (!date || !sector?.id) return;
+        if (!date || !sector?.id || !alunoId) return;
 
         try {
             setLoading(true);
             const dateStr = formatDateKey(date);
             
             // Buscar agendamentos do dia para o setor específico
-            const { data, error } = await supabase
+            const { data: sectorSlots, error: sectorError } = await supabase
                 .from('agendamento')
                 .select('data_hora')
                 .eq('setor_id', sector.id)
                 .gte('data_hora', `${dateStr} 00:00:00`)
                 .lte('data_hora', `${dateStr} 23:59:59`);
 
-            if (error) {
-                console.error('Erro ao buscar agendamentos:', error);
+            if (sectorError) {
+                console.error('Erro ao buscar agendamentos do setor:', sectorError);
                 return;
             }
 
-            // Extrair os horários ocupados
-            const occupied = data.map(item => {
+            // Buscar agendamentos do aluno para o dia (em qualquer setor)
+            const { data: userSlots, error: userError } = await supabase
+                .from('agendamento')
+                .select('data_hora')
+                .eq('aluno_id', alunoId)
+                .gte('data_hora', `${dateStr} 00:00:00`)
+                .lte('data_hora', `${dateStr} 23:59:59`);
+
+            if (userError) {
+                console.error('Erro ao buscar agendamentos do aluno:', userError);
+                return;
+            }
+
+            // Combinar horários ocupados do setor e do usuário
+            const allOccupied = [...(sectorSlots || []), ...(userSlots || [])];
+            
+            // Extrair os horários ocupados e remover duplicatas
+            const occupied = [...new Set(allOccupied.map(item => {
                 const datetime = new Date(item.data_hora);
                 const hour = String(datetime.getHours()).padStart(2, '0');
                 const minute = String(datetime.getMinutes()).padStart(2, '0');
                 return `${hour}:${minute}`;
-            });
+            }))];
 
             setOccupiedSlots(occupied);
         } catch (error) {
