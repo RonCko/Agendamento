@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../../lib/supabase';
@@ -182,6 +182,14 @@ const HomeScreenTA = () => {
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={{ paddingBottom: 16 }}
             showsVerticalScrollIndicator={true}
+            refreshControl={
+              <RefreshControl
+                refreshing={loading}
+                onRefresh={loadAgendamentos}
+                colors={['#fecc00ff']}
+                tintColor="#fecc00ff"
+              />
+            }
             renderItem={({ item }) => (
               <View style={styles.agendamentoCard}>
                 <View style={styles.agendamentoHeader}>

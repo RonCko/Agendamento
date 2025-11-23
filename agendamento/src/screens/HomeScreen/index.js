@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, FlatList, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, Alert, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Calendar } from 'react-native-calendars';
 import styles from './styles';
@@ -12,26 +12,27 @@ export default function HomeScreen() {
   const [agendamentos, setAgendamentos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [alunoId, setAlunoId] = useState(null);
+  const [showHistory, setShowHistory] = useState(false);
 
   // Buscar ID do aluno autenticado
   useEffect(() => {
     loadUserData();
   }, []);
 
-  // Carregar agendamentos quando mudar a data selecionada
+  // Carregar agendamentos quando mudar a data selecionada ou modo de visualização
   useEffect(() => {
-    if (alunoId && selected) {
+    if (alunoId) {
       loadAgendamentos();
     }
-  }, [selected, alunoId]);
+  }, [selected, alunoId, showHistory]);
 
   // Recarregar quando a tela ganhar foco
   useFocusEffect(
     React.useCallback(() => {
-      if (alunoId && selected) {
+      if (alunoId) {
         loadAgendamentos();
       }
-    }, [alunoId, selected])
+    }, [alunoId, selected, showHistory])
   );
 
   async function loadUserData() {
@@ -63,34 +64,65 @@ export default function HomeScreen() {
   }
 
   async function loadAgendamentos() {
-    if (!alunoId || !selected) return;
+    if (!alunoId) return;
 
     try {
       setLoading(true);
       
-      const { data, error } = await supabase
-        .from('agendamento')
-        .select(`
-          id,
-          data_hora,
-          status,
-          setor_id,
-          setor (
+      if (showHistory) {
+        // Carregar histórico (agendamentos passados)
+        const today = new Date().toISOString().split('T')[0];
+        
+        const { data, error } = await supabase
+          .from('agendamento')
+          .select(`
             id,
-            nome,
-            localiza
-          )
-        `)
-        .eq('aluno_id', alunoId)
-        .gte('data_hora', `${selected} 00:00:00`)
-        .lte('data_hora', `${selected} 23:59:59`)
-        .order('data_hora', { ascending: true });
+            data_hora,
+            status,
+            setor_id,
+            setor (
+              id,
+              nome,
+              localiza
+            )
+          `)
+          .eq('aluno_id', alunoId)
+          .lt('data_hora', `${today} 00:00:00`)
+          .order('data_hora', { ascending: false })
+          .limit(20);
 
-      if (error) {
-        console.error('Erro ao buscar agendamentos:', error);
-        setAgendamentos([]);
-      } else {
-        setAgendamentos(data || []);
+        if (error) {
+          console.error('Erro ao buscar histórico:', error);
+          setAgendamentos([]);
+        } else {
+          setAgendamentos(data || []);
+        }
+      } else if (selected) {
+        // Carregar agendamentos da data selecionada
+        const { data, error } = await supabase
+          .from('agendamento')
+          .select(`
+            id,
+            data_hora,
+            status,
+            setor_id,
+            setor (
+              id,
+              nome,
+              localiza
+            )
+          `)
+          .eq('aluno_id', alunoId)
+          .gte('data_hora', `${selected} 00:00:00`)
+          .lte('data_hora', `${selected} 23:59:59`)
+          .order('data_hora', { ascending: true });
+
+        if (error) {
+          console.error('Erro ao buscar agendamentos:', error);
+          setAgendamentos([]);
+        } else {
+          setAgendamentos(data || []);
+        }
       }
     } catch (error) {
       console.error('Erro ao carregar agendamentos:', error);
@@ -173,24 +205,45 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container} edges={['top','left','right']}>
       <HeaderTed />
-      <View style={styles.calendarContainer}>
-        <Calendar
-          style={styles.calendar}
-          hideExtraDays={false}
-          staticHeader={true}
-          onDayPress={day => {
-            setSelected(day.dateString);
-          }}
-          markedDates={{
-            [selected]: { selected: true, disableTouchEvent: true, selectedColor: '#fecc00ff', selectedTextColor: 'black' }
-          }}
-        />
+      
+      {/* Botão toggle para alternar entre calendário e histórico */}
+      <View style={styles.toggleContainer}>
+        <TouchableOpacity 
+          style={[styles.toggleButton, !showHistory && styles.toggleButtonActive]}
+          onPress={() => setShowHistory(false)}
+        >
+          <Text style={[styles.toggleText, !showHistory && styles.toggleTextActive]}>Calendário</Text>
+        </TouchableOpacity>
+        <TouchableOpacity 
+          style={[styles.toggleButton, showHistory && styles.toggleButtonActive]}
+          onPress={() => setShowHistory(true)}
+        >
+          <Text style={[styles.toggleText, showHistory && styles.toggleTextActive]}>Histórico</Text>
+        </TouchableOpacity>
       </View>
+
+      {!showHistory && (
+        <View style={styles.calendarContainer}>
+          <Calendar
+            style={styles.calendar}
+            hideExtraDays={false}
+            staticHeader={true}
+            onDayPress={day => {
+              setSelected(day.dateString);
+            }}
+            markedDates={{
+              [selected]: { selected: true, disableTouchEvent: true, selectedColor: '#fecc00ff', selectedTextColor: 'black' }
+            }}
+          />
+        </View>
+      )}
       
       <View style={styles.agendamentosSection}>
         <Text style={styles.titleAtendimentos}>
-          Meus atendimentos
-          {selected && ` - ${selected.split('-').reverse().join('/')}`}
+          {showHistory 
+            ? 'Histórico de atendimentos' 
+            : `Meus atendimentos${selected ? ` - ${selected.split('-').reverse().join('/')}` : ''}`
+          }
         </Text>
         
         {loading ? (
@@ -200,9 +253,12 @@ export default function HomeScreen() {
           </View>
         ) : agendamentos.length === 0 ? (
           <Text style={styles.textAtendimentos}>
-            {selected 
-              ? 'Você não possui atendimento para esta data.' 
-              : 'Selecione uma data no calendário.'}
+            {showHistory 
+              ? 'Você não possui histórico de atendimentos.' 
+              : (selected 
+                  ? 'Você não possui atendimento para esta data.' 
+                  : 'Selecione uma data no calendário.')
+            }
           </Text>
         ) : (
           <FlatList
@@ -210,6 +266,14 @@ export default function HomeScreen() {
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={{ paddingBottom: 16 }}
             showsVerticalScrollIndicator={true}
+            refreshControl={
+              <RefreshControl
+                refreshing={loading}
+                onRefresh={loadAgendamentos}
+                colors={['#fecc00ff']}
+                tintColor="#fecc00ff"
+              />
+            }
             renderItem={({ item }) => (
               <View style={styles.agendamentoItem}>
                 <View style={{ flex: 1 }}>
@@ -228,7 +292,7 @@ export default function HomeScreen() {
                     Status: {getStatusText(item.status)}
                   </Text>
                 </View>
-                {item.status === 'pendente' && (
+                {item.status === 'pendente' && !showHistory && (
                   <TouchableOpacity 
                     onPress={() => cancelar(item.id)} 
                     style={styles.cancelButton}

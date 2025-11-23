@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from 'react-native';
+import { supabase } from '../lib/supabase';
 import HomeScreenAdmin from '../screens/HomeScreenAdmin';
 import PerfilScreenTA from '../screens/PerfilScreenTA';
 
@@ -10,6 +11,27 @@ const Tab = createBottomTabNavigator();
 
 export default function TabsAdmin() {
   const insets = useSafeAreaInsets();
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    loadPendingCount();
+    const interval = setInterval(loadPendingCount, 30000); // Atualiza a cada 30s
+    return () => clearInterval(interval);
+  }, []);
+
+  async function loadPendingCount() {
+    try {
+      const { count } = await supabase
+        .from('agendamento')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'pendente');
+      
+      setPendingCount(count || 0);
+    } catch (error) {
+      console.error('Erro ao carregar contagem:', error);
+    }
+  }
+
   return (
     <Tab.Navigator
       initialRouteName="HomeScreenAdmin"
@@ -43,7 +65,12 @@ export default function TabsAdmin() {
       <Tab.Screen
         name="HomeScreenAdmin"
         component={HomeScreenAdmin}
-        options={{ title: 'Todos', tabBarLabel: ({ color }) => <Text style={{ color }}>Todos</Text> }}
+        options={{ 
+          title: 'Todos', 
+          tabBarLabel: ({ color }) => <Text style={{ color }}>Todos</Text>,
+          tabBarBadge: pendingCount > 0 ? pendingCount : null,
+          tabBarBadgeStyle: { backgroundColor: '#f44336', color: '#fff' }
+        }}
       />
       <Tab.Screen
         name="PerfilScreenTA"

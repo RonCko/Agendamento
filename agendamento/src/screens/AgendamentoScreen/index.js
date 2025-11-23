@@ -150,6 +150,16 @@ const AgendamentoScreen = () => {
         if (!selectedSlot) return Alert.alert('Atenção', 'Selecione um horário');
         if (!alunoId) return Alert.alert('Erro', 'Usuário não identificado. Faça login novamente.');
 
+        // Validar se a data não é no passado
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selectedDate = new Date(date);
+        selectedDate.setHours(0, 0, 0, 0);
+        
+        if (selectedDate < today) {
+            return Alert.alert('Atenção', 'Não é possível agendar em datas passadas.');
+        }
+
         try {
             // Criar data_hora no formato timestamp
             const [hour, minute] = selectedSlot.split(':');

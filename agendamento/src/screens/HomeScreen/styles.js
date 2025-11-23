@@ -9,6 +9,30 @@ const styles = StyleSheet.create({
     alignItems: 'stretch',
     paddingHorizontal: 0,
   },
+  toggleContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    gap: 8,
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    backgroundColor: '#f0f0f0',
+    alignItems: 'center',
+  },
+  toggleButtonActive: {
+    backgroundColor: '#fecc00ff',
+  },
+  toggleText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+  },
+  toggleTextActive: {
+    color: '#000',
+  },
   calendarContainer: {
     width: '100%',
     justifyContent: 'center',
