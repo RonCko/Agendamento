@@ -71,8 +71,10 @@ const styles = StyleSheet.create({
             backgroundColor: colors.background,
             borderTopLeftRadius: 20,
             borderTopRightRadius: 20,
-            maxHeight: '85%',
-            paddingBottom: Platform.OS === 'ios' ? 34 : 20,
+            maxHeight: '90%',
+        },
+        modalScrollContent: {
+            paddingBottom: 20,
         },
         modalHeader: {
             alignItems: 'center',
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
         modalActions: {
             paddingHorizontal: 20,
             paddingTop: 10,
+            paddingBottom: 10,
             gap: 12,
         },
         modalButtonPrimary: {

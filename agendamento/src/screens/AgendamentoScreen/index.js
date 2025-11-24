@@ -79,11 +79,12 @@ const AgendamentoScreen = () => {
             setLoading(true);
             const dateStr = formatDateKey(date);
             
-            // Buscar agendamentos do dia para o setor específico
+            // Buscar agendamentos ATIVOS do dia para o setor específico (excluir cancelados)
             const { data: sectorSlots, error: sectorError } = await supabase
                 .from('agendamento')
                 .select('data_hora')
                 .eq('setor_id', sector.id)
+                .neq('status', 'cancelado')
                 .gte('data_hora', `${dateStr} 00:00:00`)
                 .lte('data_hora', `${dateStr} 23:59:59`);
 
@@ -92,11 +93,12 @@ const AgendamentoScreen = () => {
                 return;
             }
 
-            // Buscar agendamentos do aluno para o dia (em qualquer setor)
+            // Buscar agendamentos ATIVOS do aluno para o dia (em qualquer setor, excluir cancelados)
             const { data: userSlots, error: userError } = await supabase
                 .from('agendamento')
                 .select('data_hora')
                 .eq('aluno_id', alunoId)
+                .neq('status', 'cancelado')
                 .gte('data_hora', `${dateStr} 00:00:00`)
                 .lte('data_hora', `${dateStr} 23:59:59`);
 
@@ -140,6 +142,17 @@ const AgendamentoScreen = () => {
         return `${day}/${month}/${year}`;
     }
 
+    function formatDateTimeToLocal(date, hour, minute) {
+        // Cria timestamp no formato YYYY-MM-DD HH:MM:SS sem conversão UTC
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const hourStr = String(hour).padStart(2, '0');
+        const minuteStr = String(minute).padStart(2, '0');
+        
+        return `${year}-${month}-${day} ${hourStr}:${minuteStr}:00`;
+    }
+
     const availableSlots = useMemo(() => {
         if (!date) return [];
         return allSlots.filter((s) => !occupiedSlots.includes(s));
@@ -161,10 +174,29 @@ const AgendamentoScreen = () => {
         }
 
         try {
-            // Criar data_hora no formato timestamp
+            // Criar data_hora no formato timestamp LOCAL (sem conversão UTC)
             const [hour, minute] = selectedSlot.split(':');
-            const dataHora = new Date(date);
-            dataHora.setHours(parseInt(hour), parseInt(minute), 0, 0);
+            const dataHoraLocal = formatDateTimeToLocal(date, parseInt(hour), parseInt(minute));
+
+            // VALIDAÇÃO EXTRA: Verificar se já existe agendamento duplicado (mesmo aluno, setor, data/hora)
+            const { data: existingAgendamento, error: checkError } = await supabase
+                .from('agendamento')
+                .select('id')
+                .eq('aluno_id', alunoId)
+                .eq('setor_id', sector.id)
+                .eq('data_hora', dataHoraLocal)
+                .maybeSingle();
+
+            if (checkError) {
+                console.error('Erro ao verificar agendamento duplicado:', checkError);
+            }
+
+            if (existingAgendamento) {
+                return Alert.alert(
+                    'Agendamento Duplicado',
+                    'Você já possui um agendamento neste horário e setor.'
+                );
+            }
 
             // Inserir agendamento no banco
             const { data, error } = await supabase
@@ -172,7 +204,7 @@ const AgendamentoScreen = () => {
                 .insert([{
                     aluno_id: alunoId,
                     setor_id: sector.id,
-                    data_hora: dataHora.toISOString(),
+                    data_hora: dataHoraLocal,
                     status: 'pendente'
                 }])
                 .select();

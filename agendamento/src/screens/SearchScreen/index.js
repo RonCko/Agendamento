@@ -145,8 +145,11 @@ const SearchScreen = () => {
                     onRequestClose={closeModal}
                 >
                     <View style={styles.modalOverlay}>
-                        <View style={styles.modalContent}>
-                            <ScrollView showsVerticalScrollIndicator={false}>
+                        <SafeAreaView style={styles.modalContent} edges={['bottom']}>
+                            <ScrollView 
+                                showsVerticalScrollIndicator={false}
+                                contentContainerStyle={styles.modalScrollContent}
+                            >
                                 <View style={styles.modalHeader}>
                                     <View style={styles.modalAvatarLarge}>
                                         <Text style={styles.modalAvatarText}>
@@ -202,7 +205,7 @@ const SearchScreen = () => {
                                     </TouchableOpacity>
                                 </View>
                             </ScrollView>
-                        </View>
+                        </SafeAreaView>
                     </View>
                 </Modal>
             </SafeAreaView>
