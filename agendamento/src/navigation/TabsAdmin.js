@@ -4,6 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Text } from 'react-native';
 import { supabase } from '../lib/supabase';
+import DashboardAdminScreen from '../screens/DashboardAdminScreen';
 import HomeScreenAdmin from '../screens/HomeScreenAdmin';
 import PerfilScreenTA from '../screens/PerfilScreenTA';
 
@@ -34,7 +35,7 @@ export default function TabsAdmin() {
 
   return (
     <Tab.Navigator
-      initialRouteName="HomeScreenAdmin"
+      initialRouteName="DashboardAdminScreen"
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarActiveTintColor: '#000',
@@ -51,6 +52,9 @@ export default function TabsAdmin() {
         tabBarIcon: ({ color, size, focused }) => {
           let iconName = 'ellipse';
           switch (route.name) {
+            case 'DashboardAdminScreen':
+              iconName = focused ? 'stats-chart' : 'stats-chart-outline';
+              break;
             case 'HomeScreenAdmin':
               iconName = focused ? 'grid' : 'grid-outline';
               break;
@@ -62,6 +66,14 @@ export default function TabsAdmin() {
         }
       })}
     >
+      <Tab.Screen
+        name="DashboardAdminScreen"
+        component={DashboardAdminScreen}
+        options={{ 
+          title: 'Dashboard', 
+          tabBarLabel: ({ color }) => <Text style={{ color }}>Dashboard</Text>
+        }}
+      />
       <Tab.Screen
         name="HomeScreenAdmin"
         component={HomeScreenAdmin}
