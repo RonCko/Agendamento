@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { View, Text, ScrollView, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -8,6 +8,7 @@ import HeaderTed from '../../components/HeaderTed';
 import { supabase } from '../../lib/supabase';
 
 export default function DashboardAdminScreen() {
+  const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState({
     pendentes: 0,
@@ -17,6 +18,7 @@ export default function DashboardAdminScreen() {
     hoje: 0,
   });
   const [setorStats, setSetorStats] = useState([]);
+  const [expandedSetor, setExpandedSetor] = useState(null);
 
   useEffect(() => {
     loadDashboardData();
@@ -151,6 +153,10 @@ export default function DashboardAdminScreen() {
     return ((stats.cancelados / total) * 100).toFixed(1);
   }
 
+  function navigateToAgendamentos(status) {
+    navigation.navigate('AgendamentosListScreen', { status });
+  }
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <HeaderTed />
@@ -177,32 +183,44 @@ export default function DashboardAdminScreen() {
 
         {!loading && (
           <>
-            {/* Cards de Status */}
+            {/* Cards de Status - CLICÁVEIS */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Visão Geral</Text>
               <View style={styles.cardsRow}>
-                <View style={[styles.card, styles.cardPendente]}>
+                <TouchableOpacity 
+                  style={[styles.card, styles.cardPendente]}
+                  onPress={() => navigateToAgendamentos('pendente')}
+                >
                   <Ionicons name="time-outline" size={28} color="#FFA500" />
                   <Text style={styles.cardNumber}>{stats.pendentes}</Text>
                   <Text style={styles.cardLabel}>Pendentes</Text>
-                </View>
-                <View style={[styles.card, styles.cardConfirmado]}>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.card, styles.cardConfirmado]}
+                  onPress={() => navigateToAgendamentos('confirmado')}
+                >
                   <Ionicons name="checkmark-circle-outline" size={28} color="#4CAF50" />
                   <Text style={styles.cardNumber}>{stats.confirmados}</Text>
                   <Text style={styles.cardLabel}>Confirmados</Text>
-                </View>
+                </TouchableOpacity>
               </View>
               <View style={styles.cardsRow}>
-                <View style={[styles.card, styles.cardConcluido]}>
+                <TouchableOpacity 
+                  style={[styles.card, styles.cardConcluido]}
+                  onPress={() => navigateToAgendamentos('concluido')}
+                >
                   <Ionicons name="checkmark-done-outline" size={28} color="#2196F3" />
                   <Text style={styles.cardNumber}>{stats.concluidos}</Text>
                   <Text style={styles.cardLabel}>Concluídos</Text>
-                </View>
-                <View style={[styles.card, styles.cardCancelado]}>
+                </TouchableOpacity>
+                <TouchableOpacity 
+                  style={[styles.card, styles.cardCancelado]}
+                  onPress={() => navigateToAgendamentos('cancelado')}
+                >
                   <Ionicons name="close-circle-outline" size={28} color="#F44336" />
                   <Text style={styles.cardNumber}>{stats.cancelados}</Text>
                   <Text style={styles.cardLabel}>Cancelados</Text>
-                </View>
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -228,37 +246,59 @@ export default function DashboardAdminScreen() {
               </View>
             </View>
 
-            {/* Estatísticas por Setor */}
+            {/* Estatísticas por Setor - REDESENHADO */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Agendamentos por Setor</Text>
               {setorStats.length === 0 ? (
                 <Text style={styles.emptyText}>Nenhum agendamento registrado</Text>
               ) : (
                 setorStats.map((setor, index) => (
-                  <View key={index} style={styles.setorCard}>
-                    <View style={styles.setorHeader}>
-                      <Text style={styles.setorNome}>{setor.nome}</Text>
-                      <Text style={styles.setorTotal}>{setor.total} total</Text>
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.setorCardNew}
+                    onPress={() => setExpandedSetor(expandedSetor === index ? null : index)}
+                    activeOpacity={0.7}
+                  >
+                    <View style={styles.setorHeaderNew}>
+                      <View style={styles.setorIconContainer}>
+                        <Text style={styles.setorIcon}>🏢</Text>
+                      </View>
+                      <View style={styles.setorInfo}>
+                        <Text style={styles.setorNomeNew}>{setor.nome}</Text>
+                        <Text style={styles.setorTotalNew}>{setor.total} agendamentos</Text>
+                      </View>
+                      <Ionicons 
+                        name={expandedSetor === index ? "chevron-up" : "chevron-down"} 
+                        size={24} 
+                        color="#666" 
+                      />
                     </View>
-                    <View style={styles.setorStats}>
-                      <View style={styles.setorStatItem}>
-                        <View style={[styles.setorStatDot, { backgroundColor: '#FFA500' }]} />
-                        <Text style={styles.setorStatText}>{setor.pendentes} pendentes</Text>
+                    
+                    {expandedSetor === index && (
+                      <View style={styles.setorStatsNew}>
+                        <View style={styles.statRow}>
+                          <View style={[styles.statDot, { backgroundColor: '#FFA500' }]} />
+                          <Text style={styles.statLabel}>Pendentes</Text>
+                          <Text style={styles.statValue}>{setor.pendentes}</Text>
+                        </View>
+                        <View style={styles.statRow}>
+                          <View style={[styles.statDot, { backgroundColor: '#4CAF50' }]} />
+                          <Text style={styles.statLabel}>Confirmados</Text>
+                          <Text style={styles.statValue}>{setor.confirmados}</Text>
+                        </View>
+                        <View style={styles.statRow}>
+                          <View style={[styles.statDot, { backgroundColor: '#2196F3' }]} />
+                          <Text style={styles.statLabel}>Concluídos</Text>
+                          <Text style={styles.statValue}>{setor.concluidos}</Text>
+                        </View>
+                        <View style={styles.statRow}>
+                          <View style={[styles.statDot, { backgroundColor: '#F44336' }]} />
+                          <Text style={styles.statLabel}>Cancelados</Text>
+                          <Text style={styles.statValue}>{setor.cancelados}</Text>
+                        </View>
                       </View>
-                      <View style={styles.setorStatItem}>
-                        <View style={[styles.setorStatDot, { backgroundColor: '#4CAF50' }]} />
-                        <Text style={styles.setorStatText}>{setor.confirmados} confirmados</Text>
-                      </View>
-                      <View style={styles.setorStatItem}>
-                        <View style={[styles.setorStatDot, { backgroundColor: '#2196F3' }]} />
-                        <Text style={styles.setorStatText}>{setor.concluidos} concluídos</Text>
-                      </View>
-                      <View style={styles.setorStatItem}>
-                        <View style={[styles.setorStatDot, { backgroundColor: '#F44336' }]} />
-                        <Text style={styles.setorStatText}>{setor.cancelados} cancelados</Text>
-                      </View>
-                    </View>
-                  </View>
+                    )}
+                  </TouchableOpacity>
                 ))
               )}
             </View>

@@ -8,6 +8,7 @@ import TabsTA from '../navigation/TabsTA';
 import TabsAdmin from '../navigation/TabsAdmin';
 import ChatScreen from '../screens/ChatScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
+import AgendamentosListScreen from '../screens/AgendamentosListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +26,11 @@ export default function Routes() {
                     name="AgendamentoScreen" 
                     component={AgendamentoScreen} 
                     options={{ presentation: 'modal', headerShown: true, title: 'Agendamento' }}
+                />
+                <Stack.Screen 
+                    name="AgendamentosListScreen" 
+                    component={AgendamentosListScreen} 
+                    options={{ headerShown: false }}
                 />
                 <Stack.Screen 
                     name="Chat" 
