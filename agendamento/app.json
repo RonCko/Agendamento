@@ -21,10 +21,16 @@
         "backgroundColor": "#FFD54F"
       },
       "edgeToEdgeEnabled": true,
-      "softwareKeyboardLayoutMode": "resize"
+      "softwareKeyboardLayoutMode": "resize",
+      "package": "com.edubgn1.agendamento"
     },
     "web": {
       "favicon": "./assets/images/logo_utfpr.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d95721a9-04f9-42c8-95bd-1d7898432109"
+      }
     }
   }
 }
