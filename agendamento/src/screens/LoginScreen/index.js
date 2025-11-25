@@ -179,14 +179,11 @@ const LoginScreen = ({ navigation }) => {
       </View>
       <View style={styles.footerContainer}>
         <TouchableOpacity 
-          style={styles.signupButton}
+          style={[styles.signupButton, { paddingBottom: Math.max(insets.bottom, 8) }]}
           onPress={() => navigation.navigate('SignUp')}
           disabled={loading}
         >
           <Text style={styles.signupButtonText}>Não tem uma conta? Cadastre-se</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.forgotButton, { paddingBottom: Math.max(insets.bottom, 8) }]}>
-          <Text style={styles.forgotButtonText}>Esqueceu a senha?</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

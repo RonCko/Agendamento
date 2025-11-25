@@ -60,6 +60,32 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     color: colors.text,
   },
+  filterContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginBottom: 12,
+  },
+  filterButton: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: 16,
+    backgroundColor: '#f0f0f0',
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  filterButtonActive: {
+    backgroundColor: '#fecc00ff',
+    borderColor: '#fecc00ff',
+  },
+  filterButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#666',
+  },
+  filterButtonTextActive: {
+    color: '#000',
+  },
   textAtendimentos: {
     fontSize: 15,
     textAlign: 'center',

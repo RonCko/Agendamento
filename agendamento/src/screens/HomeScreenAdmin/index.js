@@ -9,22 +9,25 @@ import styles from './styles';
 const HomeScreenAdmin = () => {
   const [agendamentos, setAgendamentos] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('pendentes'); // 'pendentes' ou 'confirmados'
 
   useFocusEffect(
     React.useCallback(() => {
       loadAgendamentos();
-    }, [])
+    }, [activeTab])
   );
 
   async function loadAgendamentos() {
     try {
       setLoading(true);
       
-      // Buscar todos os agendamentos pendentes de todos os setores
+      // Buscar agendamentos baseado na aba ativa
+      const statusFiltro = activeTab === 'pendentes' ? 'pendente' : 'confirmado';
+      
       const { data: agendamentosData, error: agendError } = await supabase
         .from('agendamento')
         .select('id, data_hora, status, aluno_id, setor_id')
-        .eq('status', 'pendente')
+        .eq('status', statusFiltro)
         .order('data_hora', { ascending: true });
 
       if (agendError) {
@@ -93,6 +96,35 @@ const HomeScreenAdmin = () => {
     );
   }
 
+  async function concluir(id) {
+    Alert.alert(
+      'Concluir atendimento',
+      'Marcar este atendimento como concluído?',
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        {
+          text: 'Concluir',
+          onPress: async () => {
+            try {
+              const { error } = await supabase
+                .from('agendamento')
+                .update({ status: 'concluido' })
+                .eq('id', id);
+
+              if (error) throw error;
+
+              Alert.alert('Sucesso', 'Atendimento marcado como concluído!');
+              loadAgendamentos();
+            } catch (error) {
+              console.error('Erro ao concluir atendimento:', error);
+              Alert.alert('Erro', 'Não foi possível concluir o atendimento.');
+            }
+          }
+        }
+      ]
+    );
+  }
+
   async function cancelar(id) {
     Alert.alert(
       'Cancelar agendamento',
@@ -136,8 +168,32 @@ const HomeScreenAdmin = () => {
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <HeaderTed />
       <View style={styles.content}>
-        <Text style={styles.title}>Todos os Agendamentos</Text>
-        <Text style={styles.subtitle}>Administrador - Todos os setores</Text>
+        {/* Tabs para alternar entre Pendentes e Confirmados */}
+        <View style={styles.tabContainer}>
+          <TouchableOpacity 
+            style={[styles.tab, activeTab === 'pendentes' && styles.tabActive]}
+            onPress={() => setActiveTab('pendentes')}
+          >
+            <Text style={[styles.tabText, activeTab === 'pendentes' && styles.tabTextActive]}>
+              Pendentes
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.tab, activeTab === 'confirmados' && styles.tabActive]}
+            onPress={() => setActiveTab('confirmados')}
+          >
+            <Text style={[styles.tabText, activeTab === 'confirmados' && styles.tabTextActive]}>
+              Confirmados
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <Text style={styles.title}>
+          {activeTab === 'pendentes' ? 'Todos os Agendamentos Pendentes' : 'Todos os Agendamentos Confirmados'}
+        </Text>
+        <Text style={styles.subtitle}>
+          {activeTab === 'pendentes' ? 'Administrador - Todos os setores' : 'Atendimentos a realizar'}
+        </Text>
 
         {loading ? (
           <View style={styles.loadingContainer}>
@@ -147,7 +203,10 @@ const HomeScreenAdmin = () => {
         ) : agendamentos.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Text style={styles.emptyText}>
-              Não há agendamentos pendentes no momento.
+              {activeTab === 'pendentes' 
+                ? 'Não há agendamentos pendentes no momento.'
+                : 'Não há agendamentos confirmados no momento.'
+              }
             </Text>
           </View>
         ) : (
@@ -191,19 +250,39 @@ const HomeScreenAdmin = () => {
                 </Text>
 
                 <View style={styles.actionsContainer}>
-                  <TouchableOpacity 
-                    onPress={() => confirmar(item.id)} 
-                    style={[styles.actionButton, styles.confirmButton]}
-                  >
-                    <Text style={styles.confirmText}>Confirmar</Text>
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity 
-                    onPress={() => cancelar(item.id)} 
-                    style={[styles.actionButton, styles.cancelButton]}
-                  >
-                    <Text style={styles.cancelText}>Cancelar</Text>
-                  </TouchableOpacity>
+                  {activeTab === 'pendentes' ? (
+                    <>
+                      <TouchableOpacity 
+                        onPress={() => confirmar(item.id)} 
+                        style={[styles.actionButton, styles.confirmButton]}
+                      >
+                        <Text style={styles.confirmText}>Confirmar</Text>
+                      </TouchableOpacity>
+                      
+                      <TouchableOpacity 
+                        onPress={() => cancelar(item.id)} 
+                        style={[styles.actionButton, styles.cancelButton]}
+                      >
+                        <Text style={styles.cancelText}>Cancelar</Text>
+                      </TouchableOpacity>
+                    </>
+                  ) : (
+                    <>
+                      <TouchableOpacity 
+                        onPress={() => concluir(item.id)} 
+                        style={[styles.actionButton, styles.concluirButton]}
+                      >
+                        <Text style={styles.concluirText}>Concluir</Text>
+                      </TouchableOpacity>
+                      
+                      <TouchableOpacity 
+                        onPress={() => cancelar(item.id)} 
+                        style={[styles.actionButton, styles.cancelButton]}
+                      >
+                        <Text style={styles.cancelText}>Cancelar</Text>
+                      </TouchableOpacity>
+                    </>
+                  )}
                 </View>
               </View>
             )}

@@ -91,7 +91,6 @@ const styles = StyleSheet.create({
   },
   signupButton: {
     alignSelf: 'center',
-    marginBottom: 8,
     padding: 10,
   },
   signupButtonText: {
@@ -99,20 +98,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '600',
     textDecorationLine: 'underline',
-  },
-  forgotButton: {
-    alignSelf: 'center',
-    marginBottom: 0,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    width: '100%',
-    alignItems: 'center',
-  },
-  forgotButtonText: {
-    color: colors.text,
-    fontSize: 16,
   },
 });
 

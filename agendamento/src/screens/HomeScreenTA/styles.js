@@ -11,6 +11,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
   },
+  tabContainer: {
+    flexDirection: 'row',
+    marginBottom: 16,
+    backgroundColor: '#f0f0f0',
+    borderRadius: 10,
+    padding: 4,
+  },
+  tab: {
+    flex: 1,
+    paddingVertical: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  tabActive: {
+    backgroundColor: '#fecc00ff',
+  },
+  tabText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#666',
+  },
+  tabTextActive: {
+    color: '#000',
+  },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
@@ -90,6 +114,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
   },
   confirmText: {
+    color: '#fff',
+    fontSize: 15,
+    fontWeight: '600',
+  },
+  concluirButton: {
+    backgroundColor: '#2196F3',
+  },
+  concluirText: {
     color: '#fff',
     fontSize: 15,
     fontWeight: '600',

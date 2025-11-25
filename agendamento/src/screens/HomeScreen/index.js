@@ -26,6 +26,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState(false);
   const [alunoId, setAlunoId] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('todos');
 
   // Buscar ID do aluno autenticado
   useEffect(() => {
@@ -37,7 +38,7 @@ export default function HomeScreen() {
     if (alunoId) {
       loadAgendamentos();
     }
-  }, [selected, alunoId, showHistory]);
+  }, [selected, alunoId, showHistory, statusFilter]);
 
   // Recarregar quando a tela ganhar foco
   useFocusEffect(
@@ -45,7 +46,7 @@ export default function HomeScreen() {
       if (alunoId) {
         loadAgendamentos();
       }
-    }, [alunoId, selected, showHistory])
+    }, [alunoId, selected, showHistory, statusFilter])
   );
 
   async function loadUserData() {
@@ -89,10 +90,8 @@ export default function HomeScreen() {
       setLoading(true);
       
       if (showHistory) {
-        // Carregar histórico (agendamentos passados)
-        const today = new Date().toISOString().split('T')[0];
-        
-        const { data, error } = await supabase
+        // Carregar todos os agendamentos do aluno
+        let query = supabase
           .from('agendamento')
           .select(`
             id,
@@ -105,10 +104,16 @@ export default function HomeScreen() {
               localiza
             )
           `)
-          .eq('aluno_id', alunoId)
-          .lt('data_hora', `${today} 00:00:00`)
-          .order('data_hora', { ascending: false })
-          .limit(20);
+          .eq('aluno_id', alunoId);
+        
+        // Aplicar filtro de status se não for "todos"
+        if (statusFilter !== 'todos') {
+          query = query.eq('status', statusFilter);
+        }
+        
+        query = query.order('data_hora', { ascending: false });
+        
+        const { data, error } = await query;
 
         if (error) {
           console.error('Erro ao buscar histórico:', error);
@@ -264,6 +269,41 @@ export default function HomeScreen() {
             : `Meus atendimentos${selected ? ` - ${selected.split('-').reverse().join('/')}` : ''}`
           }
         </Text>
+        
+        {showHistory && (
+          <View style={styles.filterContainer}>
+            <TouchableOpacity 
+              style={[styles.filterButton, statusFilter === 'todos' && styles.filterButtonActive]}
+              onPress={() => setStatusFilter('todos')}
+            >
+              <Text style={[styles.filterButtonText, statusFilter === 'todos' && styles.filterButtonTextActive]}>Todos</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.filterButton, statusFilter === 'pendente' && styles.filterButtonActive]}
+              onPress={() => setStatusFilter('pendente')}
+            >
+              <Text style={[styles.filterButtonText, statusFilter === 'pendente' && styles.filterButtonTextActive]}>Pendentes</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.filterButton, statusFilter === 'confirmado' && styles.filterButtonActive]}
+              onPress={() => setStatusFilter('confirmado')}
+            >
+              <Text style={[styles.filterButtonText, statusFilter === 'confirmado' && styles.filterButtonTextActive]}>Confirmados</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.filterButton, statusFilter === 'concluido' && styles.filterButtonActive]}
+              onPress={() => setStatusFilter('concluido')}
+            >
+              <Text style={[styles.filterButtonText, statusFilter === 'concluido' && styles.filterButtonTextActive]}>Concluídos</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[styles.filterButton, statusFilter === 'cancelado' && styles.filterButtonActive]}
+              onPress={() => setStatusFilter('cancelado')}
+            >
+              <Text style={[styles.filterButtonText, statusFilter === 'cancelado' && styles.filterButtonTextActive]}>Cancelados</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         
         {loading ? (
           <View style={{ padding: 20, alignItems: 'center' }}>
