@@ -2,7 +2,7 @@
   "expo": {
     "name": "agendamento",
     "slug": "agendamento",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/Agendamento_logo.png",
     "userInterfaceStyle": "light",
