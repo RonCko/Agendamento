@@ -2,13 +2,13 @@
   "expo": {
     "name": "agendamento",
     "slug": "agendamento",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
-    "icon": "./assets/images/logo_utfpr.png",
+    "icon": "./assets/images/Agendamento_logo.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/logo_utfpr.png",
+      "image": "./assets/images/Agendamento_logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFD54F"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/logo_utfpr.png",
+        "foregroundImage": "./assets/images/Agendamento_logo.png",
         "backgroundColor": "#FFD54F"
       },
       "edgeToEdgeEnabled": true,
