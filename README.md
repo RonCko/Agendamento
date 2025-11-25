@@ -47,7 +47,6 @@ O sistema inclui também um dashboard administrativo e um bot que auxilia alunos
 - Possui acesso a um dashboard completo com estatísticas, incluindo:
   - Quantidade total de atendimentos.
   - Setores mais movimentados.
-  - Horários e dias de maior demanda.
   - Situação geral dos agendamentos (pendentes, confirmados, cancelados).
 - Acesso completo aos atendimentos de todos os setores.
 
@@ -55,17 +54,17 @@ O sistema inclui também um dashboard administrativo e um bot que auxilia alunos
 
 ## Integrações (Planejadas ou em Estudo)
 
-- Google Calendar
-- Agenda institucional da UTFPR
+- Google Calendar  
+- Agenda institucional da UTFPR  
 - Possível integração com o sistema já utilizado no câmpus Cornélio Procópio
 
 ---
 
 ## Tecnologias Utilizadas
 
-- Expo (React Native)
-- JavaScript/TypeScript
-- Supabase (autenticação e banco de dados)
+- Expo (React Native)  
+- JavaScript/TypeScript  
+- Supabase (autenticação e banco de dados)  
 - API auxiliar do botTed
 
 ---
@@ -88,13 +87,13 @@ O repositório contém:
 
 2. Instale as dependências:
 
-   ```bash
+   ```
    npm install
    ```
 
 3. Inicie o projeto:
 
-   ```bash
+   ```
    npm start
    ```
 
