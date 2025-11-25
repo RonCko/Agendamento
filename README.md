@@ -17,14 +17,14 @@ Senha para acesso ao supabase: agendamentoutfpr
 ---
 # Plataforma de Agendamentos – DEPED (UTFPR Dois Vizinhos)
 
-Este projeto foi desenvolvido para modernizar e automatizar o processo de agendamento de atendimentos entre estudantes e servidores do Departamento de Educação (DEPED) do câmpus Dois Vizinhos da UTFPR.  
+Este projeto foi desenvolvido para modernizar e automatizar o processo de agendamento de atendimentos entre estudantes e servidores do Departamento de Educação (DEPED) do câmpus Dois Vizinhos da UTFPR.
 A plataforma é simples, intuitiva e inspirada em ferramentas como o Calendly, mas adaptada para a realidade acadêmica.
 
 ---
 
 ## Visão Geral
 
-A solução permite que estudantes realizem agendamentos nos setores da faculdade, enquanto os servidores podem confirmar ou cancelar esses atendimentos.  
+A solução permite que estudantes realizem agendamentos nos setores da faculdade, enquanto os servidores podem confirmar ou cancelar esses atendimentos.
 O sistema inclui também um dashboard administrativo e um bot que auxilia alunos com informações sobre os setores.
 
 ---
@@ -47,7 +47,6 @@ O sistema inclui também um dashboard administrativo e um bot que auxilia alunos
 - Possui acesso a um dashboard completo com estatísticas, incluindo:
   - Quantidade total de atendimentos.
   - Setores mais movimentados.
-  - Horários e dias de maior demanda.
   - Situação geral dos agendamentos (pendentes, confirmados, cancelados).
 - Acesso completo aos atendimentos de todos os setores.
 
@@ -73,9 +72,9 @@ O sistema inclui também um dashboard administrativo e um bot que auxilia alunos
 ## Estrutura Geral do Repositório
 
 O repositório contém:
-- Código-fonte da aplicação  
-- Protótipos e telas de referência  
-- Arquivos auxiliares de apoio ao desenvolvimento  
+- Código-fonte da aplicação
+- Protótipos e telas de referência
+- Arquivos auxiliares de apoio ao desenvolvimento
 
 ---
 
@@ -88,13 +87,13 @@ O repositório contém:
 
 2. Instale as dependências:
 
-   ```bash
+   ```
    npm install
    ```
 
 3. Inicie o projeto:
 
-   ```bash
+   ```
    npm start
    ```
 
