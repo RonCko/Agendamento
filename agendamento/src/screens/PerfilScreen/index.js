@@ -58,7 +58,7 @@ const PerfilScreen = () => {
                         name: aluno.nome,
                         ra: `a${aluno.RA}`, // Adiciona 'a' na frente do número
                         email: aluno.email,
-                        curso: aluno.curso,
+                        curso: aluno.curso || 'Engenharia de Software',
                     });
                 }
             }

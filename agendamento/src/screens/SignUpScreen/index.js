@@ -60,6 +60,7 @@ const SignUpScreen = ({ navigation }) => {
             ra_number: raNumber, // Guarda só números para o banco
             name: name,
             email_institucional: email,
+            curso: 'Engenharia de Software', // Curso padrão fixo
           },
         },
       });
