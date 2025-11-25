@@ -16,6 +16,7 @@ const PerfilScreenTA = () => {
         email: '...',
         setor: 'Carregando...',
         localiza: '...',
+        role: null,
     });
 
     useEffect(() => {
@@ -24,7 +25,17 @@ const PerfilScreenTA = () => {
 
     const loadUserData = async () => {
         try {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user }, error: authError } = await supabase.auth.getUser();
+            
+            if (authError) {
+                console.error('Erro de autenticação:', authError);
+                await supabase.auth.signOut();
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                });
+                return;
+            }
             
             if (user) {
                 // Buscar dados completos da tabela tec_adm com setor
@@ -47,6 +58,7 @@ const PerfilScreenTA = () => {
                         email: user.email || 'Email não disponível',
                         setor: 'Setor não disponível',
                         localiza: '...',
+                        role: null,
                     });
                 } else if (tecAdm) {
                     setUserData({
@@ -54,6 +66,7 @@ const PerfilScreenTA = () => {
                         email: tecAdm.email,
                         setor: tecAdm.setor?.nome || 'Setor não informado',
                         localiza: tecAdm.setor?.localiza || 'Localização não informada',
+                        role: tecAdm.role,
                     });
                 }
             }
@@ -121,11 +134,15 @@ const PerfilScreenTA = () => {
                         <Text style={styles.descText}>E-mail</Text>
                         <Text style={styles.text}>{userData.email}</Text>
 
-                        <Text style={styles.descText}>Setor</Text>
-                        <Text style={styles.text}>{userData.setor}</Text>
+                        {userData.role !== 'admin' && (
+                            <>
+                                <Text style={styles.descText}>Setor</Text>
+                                <Text style={styles.text}>{userData.setor}</Text>
 
-                        <Text style={styles.descText}>Localização</Text>
-                        <Text style={styles.text}>{userData.localiza}</Text>
+                                <Text style={styles.descText}>Localização</Text>
+                                <Text style={styles.text}>{userData.localiza}</Text>
+                            </>
+                        )}
                     </View>
 
                     <TouchableOpacity

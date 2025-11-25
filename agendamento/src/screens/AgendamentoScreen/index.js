@@ -54,7 +54,15 @@ const AgendamentoScreen = () => {
     }, [date, sector, alunoId]);
 
     async function loadUserSession() {
-        const { data: { session } } = await supabase.auth.getSession();
+        try {
+            const { data: { session }, error: authError } = await supabase.auth.getSession();
+            
+            if (authError) {
+                console.error('Erro de autenticação:', authError);
+                await supabase.auth.signOut();
+                navigation.goBack();
+                return;
+            }
         
         if (session?.user?.email) {
             // Buscar o ID do aluno na tabela aluno usando o email
@@ -69,6 +77,11 @@ const AgendamentoScreen = () => {
             } else {
                 console.error('Erro ao buscar ID do aluno:', error);
             }
+        }
+        } catch (error) {
+            console.error('Erro ao carregar sessão:', error);
+            await supabase.auth.signOut();
+            navigation.goBack();
         }
     }
 

@@ -50,7 +50,13 @@ export default function HomeScreen() {
 
   async function loadUserData() {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: authError } = await supabase.auth.getSession();
+      
+      if (authError) {
+        console.error('Erro de autenticação:', authError);
+        await supabase.auth.signOut();
+        return;
+      }
       
       if (session?.user?.email) {
         const { data, error } = await supabase

@@ -21,7 +21,12 @@ export default function TabsTA() {
 
   async function loadPendingCount() {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session }, error: authError } = await supabase.auth.getSession();
+      
+      if (authError) {
+        console.error('Erro de autenticação:', authError);
+        return;
+      }
       
       if (session?.user?.email) {
         const { data: tecAdm } = await supabase

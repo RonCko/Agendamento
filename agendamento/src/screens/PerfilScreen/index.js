@@ -24,7 +24,17 @@ const PerfilScreen = () => {
 
     const loadUserData = async () => {
         try {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { user }, error: authError } = await supabase.auth.getUser();
+            
+            if (authError) {
+                console.error('Erro de autenticação:', authError);
+                await supabase.auth.signOut();
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Login' }],
+                });
+                return;
+            }
             
             if (user) {
                 // Buscar dados completos da tabela aluno

@@ -13,3 +13,15 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
     detectSessionInUrl: false,
   },
 });
+
+// Listener para tratar erros de autenticação
+supabase.auth.onAuthStateChange((event, session) => {
+  if (event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED') {
+    console.log('Auth event:', event);
+  }
+  
+  // Se houve erro de token, limpar sessão
+  if (event === 'SIGNED_OUT' && !session) {
+    AsyncStorage.removeItem('supabase.auth.token');
+  }
+});

@@ -53,10 +53,6 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
   },
-  cardActive: {
-    transform: [{ scale: 0.97 }],
-    opacity: 0.8,
-  },
   cardPendente: {
     borderLeftWidth: 4,
     borderLeftColor: '#FFA500',
@@ -209,60 +205,6 @@ const styles = StyleSheet.create({
     color: '#999',
     fontSize: 14,
     paddingVertical: 20,
-  },
-  filterHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  clearButton: {
-    padding: 4,
-  },
-  agendamentoCard: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#fecc00ff',
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  agendamentoHeader: {
-    marginBottom: 10,
-    paddingBottom: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
-  agendamentoAluno: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: colors.text,
-  },
-  agendamentoRA: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 2,
-  },
-  agendamentoBody: {
-    gap: 6,
-  },
-  agendamentoSetor: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.text,
-  },
-  agendamentoLocal: {
-    fontSize: 13,
-    color: '#666',
-  },
-  agendamentoData: {
-    fontSize: 13,
-    color: '#666',
-    marginTop: 4,
   },
   setorCardNew: {
     backgroundColor: '#fff',

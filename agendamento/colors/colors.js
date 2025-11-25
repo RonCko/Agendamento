@@ -1,7 +1,3 @@
-//arquivo em contrução
-
-import { StyleSheet } from 'react-native';
-
 const colors = {
   primary: '#fecc00ff',
   secondary: '#222',
@@ -11,30 +7,7 @@ const colors = {
   inputBackground: '#f9f9f9',
   placeholder: '#999',
   card: '#f6f9ff',
+  textSecondary: '#666',
 };
 
-/*ajustar cores exemplos 
-  primary
-  secondary
-  background
-  primarytext
-  secondarytext
-  border
-  placeholder
-  inputbackground
-  etc
-*/
-
 export default colors;
-
-//------------------------------------------------------------------
-
-//arquivo em construção
-
-//Possibilidade de criação de uma pasta themes para centralizar temas, se necessário, se não manter apenas a pasta colors para organização.
-
-//como utilizar o colors.js
-//import colors from '../colors';
-//backgroundColor: colors.background
-
-//------------------------------------------------------------------

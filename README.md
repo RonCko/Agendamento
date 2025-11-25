@@ -15,8 +15,6 @@ Link Figma protótipos: https://www.figma.com/design/Xxmg9CIG7ai9eHyDOkdUF5/Agen
 
 Senha para acesso ao supabase: agendamentoutfpr
 ---
-
-````markdown
 # Plataforma de Agendamentos – DEPED (UTFPR Dois Vizinhos)
 
 Este projeto foi desenvolvido para modernizar e automatizar o processo de agendamento de atendimentos entre estudantes e servidores do Departamento de Educação (DEPED) do câmpus Dois Vizinhos da UTFPR.  
@@ -84,7 +82,7 @@ O repositório contém:
 ## Como Executar o Projeto
 
 1. Clone o repositório:
-   ```bash
+   ```
    git clone https://github.com/RonCko/Agendamento
 ````
 

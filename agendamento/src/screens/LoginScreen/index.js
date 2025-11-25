@@ -159,6 +159,7 @@ const LoginScreen = ({ navigation }) => {
           placeholder="Senha"
           placeholderTextColor="#888"
           secureTextEntry
+          secureTextEntryTextColor="#000"
           autoCapitalize='none'
           value={password}
           onChangeText={setPassword}

@@ -143,6 +143,7 @@ const SignUpScreen = ({ navigation }) => {
               placeholder="Senha"
               placeholderTextColor="#888"
               secureTextEntry
+              secureTextEntryTextColor="#000"
               autoCapitalize='none'
               value={password}
               onChangeText={setPassword}
@@ -154,6 +155,7 @@ const SignUpScreen = ({ navigation }) => {
               placeholder="Confirmar senha"
               placeholderTextColor="#888"
               secureTextEntry
+              secureTextEntryTextColor="#000"
               autoCapitalize='none'
               value={confirmPassword}
               onChangeText={setConfirmPassword}
