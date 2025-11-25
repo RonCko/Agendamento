@@ -17,14 +17,14 @@ Senha para acesso ao supabase: agendamentoutfpr
 ---
 # Plataforma de Agendamentos – DEPED (UTFPR Dois Vizinhos)
 
-Este projeto foi desenvolvido para modernizar e automatizar o processo de agendamento de atendimentos entre estudantes e servidores do Departamento de Educação (DEPED) do câmpus Dois Vizinhos da UTFPR.  
+Este projeto foi desenvolvido para modernizar e automatizar o processo de agendamento de atendimentos entre estudantes e servidores do Departamento de Educação (DEPED) do câmpus Dois Vizinhos da UTFPR.
 A plataforma é simples, intuitiva e inspirada em ferramentas como o Calendly, mas adaptada para a realidade acadêmica.
 
 ---
 
 ## Visão Geral
 
-A solução permite que estudantes realizem agendamentos nos setores da faculdade, enquanto os servidores podem confirmar ou cancelar esses atendimentos.  
+A solução permite que estudantes realizem agendamentos nos setores da faculdade, enquanto os servidores podem confirmar ou cancelar esses atendimentos.
 O sistema inclui também um dashboard administrativo e um bot que auxilia alunos com informações sobre os setores.
 
 ---
@@ -55,17 +55,17 @@ O sistema inclui também um dashboard administrativo e um bot que auxilia alunos
 
 ## Integrações (Planejadas ou em Estudo)
 
-- Google Calendar  
-- Agenda institucional da UTFPR  
+- Google Calendar
+- Agenda institucional da UTFPR
 - Possível integração com o sistema já utilizado no câmpus Cornélio Procópio
 
 ---
 
 ## Tecnologias Utilizadas
 
-- Expo (React Native)  
-- JavaScript/TypeScript  
-- Supabase (autenticação e banco de dados)  
+- Expo (React Native)
+- JavaScript/TypeScript
+- Supabase (autenticação e banco de dados)
 - API auxiliar do botTed
 
 ---
@@ -73,9 +73,9 @@ O sistema inclui também um dashboard administrativo e um bot que auxilia alunos
 ## Estrutura Geral do Repositório
 
 O repositório contém:
-- Código-fonte da aplicação  
-- Protótipos e telas de referência  
-- Arquivos auxiliares de apoio ao desenvolvimento  
+- Código-fonte da aplicação
+- Protótipos e telas de referência
+- Arquivos auxiliares de apoio ao desenvolvimento
 
 ---
 

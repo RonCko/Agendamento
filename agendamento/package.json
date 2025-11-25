@@ -2,11 +2,17 @@
   "name": "agendamento",
   "version": "1.0.0",
   "main": "index.js",
+  
+  "devDependencies": {
+    "dotenv": "^16.3.1",
+    "yargs": "^17.7.2"
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "add-test": "node -r dotenv/config scripts/addTestAgendamento.js"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
